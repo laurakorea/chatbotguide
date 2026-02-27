@@ -39,51 +39,76 @@ const VisualEditor = () => {
     const [edges, setEdges] = useState([]);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [tourTitle, setTourTitle] = useState("New Tour Project");
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Load Data
+    // JSON to Flow Mapping & Auto-Layout
+    const loadSavedJson = useCallback((flowData) => {
+        if (!flowData || !Array.isArray(flowData)) return;
+
+        const newNodes = flowData.map((item, index) => {
+            // Auto-Layout: Calculate position if not provided
+            const position = item.position || {
+                x: RF_SPACING_X + (index % 4) * 300,
+                y: RF_SPACING_Y + Math.floor(index / 4) * 200
+            };
+
+            return {
+                id: item.id,
+                // Type Matching: 'quiz' if specified, otherwise 'chat'
+                type: item.type === 'quiz' || item.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
+                position,
+                data: {
+                    label: item.spotName || item.id,
+                    spotName: item.spotName,
+                    contents: item.contents || [],
+                    options: item.options || [],
+                    coords: item.coords
+                }
+            };
+        });
+
+        const newEdges = [];
+        flowData.forEach((item) => {
+            if (item.options && Array.isArray(item.options)) {
+                item.options.forEach((opt, optIdx) => {
+                    if (opt.target) {
+                        newEdges.push({
+                            id: `e-${item.id}-${opt.target}-${optIdx}`,
+                            source: item.id,
+                            target: opt.target,
+                            label: opt.label || '',
+                            animated: true,
+                            type: 'default',
+                            style: { stroke: '#007AFF', strokeWidth: 2 }
+                        });
+                    }
+                });
+            }
+        });
+
+        setNodes(newNodes.length > 0 ? newNodes : initialNodes);
+        setEdges(newEdges);
+    }, []);
+
+    // Initial Sync & Loading State
     useEffect(() => {
         if (id !== 'new') {
+            setIsLoading(true);
             const savedTours = JSON.parse(localStorage.getItem('tours') || '[]');
             const tour = savedTours.find(t => t.id === id);
-            if (tour) {
-                setTourTitle(tour.title);
-                const flow = tour.jsonData?.flow || [];
 
-                const rfNodes = flow.map((node, idx) => ({
-                    id: node.id,
-                    type: node.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
-                    position: { x: RF_SPACING_X + idx * 280, y: RF_SPACING_Y },
-                    data: {
-                        label: node.spotName || node.id,
-                        spotName: node.spotName,
-                        contents: node.contents || [],
-                        options: node.options || [],
-                        coords: node.coords
-                    }
-                }));
+            // Artificial delay for Apple-style smooth entry
+            const timer = setTimeout(() => {
+                if (tour) {
+                    setTourTitle(tour.title);
+                    loadSavedJson(tour.jsonData?.flow);
+                }
+                setIsLoading(false);
+            }, 800);
 
-                const rfEdges = [];
-                flow.forEach(node => {
-                    node.options?.forEach((opt, optIdx) => {
-                        if (opt.target) {
-                            rfEdges.push({
-                                id: `e-${node.id}-${opt.target}-${optIdx}`,
-                                source: node.id,
-                                target: opt.target,
-                                label: opt.label,
-                                animated: true,
-                                type: 'default',
-                                style: { stroke: '#007AFF', strokeWidth: 2 }
-                            });
-                        }
-                    });
-                });
-
-                setNodes(rfNodes.length > 0 ? rfNodes : initialNodes);
-                setEdges(rfEdges);
-            }
+            return () => clearTimeout(timer);
         }
-    }, [id]);
+    }, [id, loadSavedJson]);
 
     const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
     const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
@@ -127,13 +152,38 @@ const VisualEditor = () => {
         setNodes((nds) => nds.map((n) => (n.id === nodeId ? { ...n, data: newData } : n)));
     };
 
+    const handleJsonUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setIsLoading(true);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const json = JSON.parse(event.target.result);
+                if (json.flow) {
+                    setTimeout(() => {
+                        loadSavedJson(json.flow);
+                        setIsLoading(false);
+                    }, 600);
+                }
+            } catch (err) {
+                alert('JSON 형식이 올바르지 않습니다.');
+                setIsLoading(false);
+            }
+        };
+        reader.readAsText(file);
+    };
+
     const exportJson = () => {
         const flow = nodes.map(n => ({
             id: n.id,
+            type: n.type, // 'chat' or 'quiz'
             spotName: n.data.spotName || n.data.label,
             contents: n.data.contents || [],
             options: n.data.options || [],
-            coords: n.data.coords
+            coords: n.data.coords,
+            position: n.position // Save visual position
         }));
 
         const tourExport = { flow };
@@ -149,18 +199,23 @@ const VisualEditor = () => {
     const saveToProject = () => {
         const flow = nodes.map(n => ({
             id: n.id,
+            type: n.type,
             spotName: n.data.spotName || n.data.label,
             contents: n.data.contents || [],
             options: n.data.options || [],
-            coords: n.data.coords
+            coords: n.data.coords,
+            position: n.position
         }));
 
         const savedTours = JSON.parse(localStorage.getItem('tours') || '[]');
+        const currentTour = savedTours.find(t => t.id === id);
+
         const newTour = {
             id: id === 'new' ? Date.now().toString() : id,
             title: tourTitle,
             slug: tourTitle.toLowerCase().replace(/\s+/g, '-'),
             jsonData: { flow },
+            thumbnail: currentTour?.thumbnail || '',
             updatedAt: new Date().toISOString()
         };
 
@@ -177,6 +232,16 @@ const VisualEditor = () => {
 
     return (
         <div className={styles.editorPage}>
+            {/* Skeleton Loading Overlay */}
+            {isLoading && (
+                <div className="absolute inset-0 z-[2000] bg-white/80 backdrop-blur-md flex items-center justify-center animate-pulse">
+                    <div className="flex flex-col items-center">
+                        <div className="w-16 h-16 border-4 border-[#007AFF] border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="text-lg font-semibold text-[#1C1C1E]">시나리오 데이터를 분석 중입니다...</p>
+                    </div>
+                </div>
+            )}
+
             <header className={styles.topBar}>
                 <div className={styles.titleArea}>
                     <input
@@ -187,6 +252,10 @@ const VisualEditor = () => {
                 </div>
                 <div className={styles.actionButtons}>
                     <button className={styles.btnSecondary} onClick={() => navigate('/admin/tours')}>Cancel</button>
+                    <label className={`${styles.btnSecondary} cursor-pointer`}>
+                        <Upload size={14} /> Import JSON
+                        <input type="file" className="hidden" accept=".json" onChange={handleJsonUpload} />
+                    </label>
                     <button className={styles.btnSecondary} onClick={exportJson}><Download size={14} /> Export JSON</button>
                     <button className={styles.btnPrimary} onClick={saveToProject}><Save size={14} /> Save Project</button>
                 </div>
