@@ -21,7 +21,7 @@ const AdminList = () => {
     };
 
     return (
-        <div className="admin-body min-h-screen px-6 py-12 md:px-12 animate-ios-entry">
+        <div id="admin-page" className="admin-body min-h-screen px-6 py-12 md:px-12 animate-ios-entry">
             <div className="max-w-6xl mx-auto">
                 <header className="admin-header flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                     <div>

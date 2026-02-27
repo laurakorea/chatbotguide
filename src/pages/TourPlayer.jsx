@@ -129,66 +129,68 @@ const TourPlayer = () => {
     };
 
     return (
-        <div className="layout-wrapper">
-            <ChatHeader
-                spotName={currentNode?.spotName}
-                quizScore={quizScore}
-                progress={progressPercent}
-                onOpenMap={() => setIsMapOpen(true)}
-            />
+        <div id="user-page">
+            <div className="layout-wrapper">
+                <ChatHeader
+                    spotName={currentNode?.spotName}
+                    quizScore={quizScore}
+                    progress={progressPercent}
+                    onOpenMap={() => setIsMapOpen(true)}
+                />
 
-            <div className="chat-pane">
-                <div className="main-container">
-                    <div className="scrollable-chat">
-                        {messageHistory.map((m, i) => (
-                            <ChatBubble
-                                key={i}
-                                message={m}
-                                isUser={m.sender === 'user'}
-                                onOptionClick={(opt) => handleOptionClick(opt, i)}
-                            />
-                        ))}
-                        {isTyping && <ChatBubble isTyping={true} />}
-                        <div ref={scrollRef} className="h-1" />
+                <div className="chat-pane">
+                    <div className="main-container">
+                        <div className="scrollable-chat">
+                            {messageHistory.map((m, i) => (
+                                <ChatBubble
+                                    key={i}
+                                    message={m}
+                                    isUser={m.sender === 'user'}
+                                    onOptionClick={(opt) => handleOptionClick(opt, i)}
+                                />
+                            ))}
+                            {isTyping && <ChatBubble isTyping={true} />}
+                            <div ref={scrollRef} className="h-1" />
+                        </div>
+
+                        <div className="bottom-bar">
+                            <div className="bottom-bar-content">
+                                <div className="input-container">
+                                    <input
+                                        className="chat-input"
+                                        placeholder="AI 키아라에게 질문하세요!"
+                                        value={aiInput}
+                                        onChange={(e) => setAiInput(e.target.value)}
+                                    />
+                                </div>
+                                <button className="send-button-circle">
+                                    <CornerDownRight size={20} />
+                                </button>
+                            </div>
+                            <p className="bottom-disclaimer">지식 가이드 키아라가 실시간으로 답변해 드립니다.</p>
+                        </div>
                     </div>
+                </div>
 
-                    <div className="bottom-bar">
-                        <div className="bottom-bar-content">
-                            <div className="input-container">
-                                <input
-                                    className="chat-input"
-                                    placeholder="AI 키아라에게 질문하세요!"
-                                    value={aiInput}
-                                    onChange={(e) => setAiInput(e.target.value)}
+                {isMapOpen && (
+                    <div className="map-modal-overlay" onClick={() => setIsMapOpen(false)}>
+                        <div className="map-modal-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="map-modal-header">
+                                <h2 className="text-[16px] font-bold">투어 지도</h2>
+                                <button onClick={() => setIsMapOpen(false)} className="close-modal-btn">닫기</button>
+                            </div>
+                            <div className="map-modal-body">
+                                <ChatMap
+                                    coords={currentNode?.coords}
+                                    currentNodeId={currentNodeId}
+                                    allSpots={allSpots}
+                                    onStartTour={startTourAt}
                                 />
                             </div>
-                            <button className="send-button-circle">
-                                <CornerDownRight size={20} />
-                            </button>
                         </div>
-                        <p className="bottom-disclaimer">지식 가이드 키아라가 실시간으로 답변해 드립니다.</p>
                     </div>
-                </div>
+                )}
             </div>
-
-            {isMapOpen && (
-                <div className="map-modal-overlay" onClick={() => setIsMapOpen(false)}>
-                    <div className="map-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="map-modal-header">
-                            <h2 className="text-[16px] font-bold">투어 지도</h2>
-                            <button onClick={() => setIsMapOpen(false)} className="close-modal-btn">닫기</button>
-                        </div>
-                        <div className="map-modal-body">
-                            <ChatMap
-                                coords={currentNode?.coords}
-                                currentNodeId={currentNodeId}
-                                allSpots={allSpots}
-                                onStartTour={startTourAt}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

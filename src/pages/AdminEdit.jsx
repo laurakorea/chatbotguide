@@ -90,7 +90,7 @@ const AdminEdit = () => {
     };
 
     return (
-        <div className="admin-body min-h-screen px-6 py-12 md:px-12 animate-ios-entry">
+        <div id="admin-page" className="admin-body min-h-screen px-6 py-12 md:px-12 animate-ios-entry">
             <div className="max-w-4xl mx-auto">
                 <header className="admin-header flex items-center gap-6">
                     <button
