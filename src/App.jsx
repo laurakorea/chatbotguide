@@ -96,9 +96,18 @@ const App = () => {
     setCurrentNodeId(spotId);
   };
 
+  const progressPercent = ((tourData.flow.findIndex(n => n.id === currentNodeId) + 1) / tourData.flow.length) * 100;
+
   return (
     <div className="layout-wrapper">
-      {/* Map Pane - Left or Top (40%) */}
+      {/* 1. Header: Fixed/Sticky at the top */}
+      <ChatHeader
+        spotName={currentNode?.spotName}
+        quizScore={quizScore}
+        progress={progressPercent}
+      />
+
+      {/* 2 & 3: Map (3.5) and Bottom Sheet (6.5) */}
       <div className="map-pane">
         <ChatMap
           coords={currentNode?.coords}
@@ -107,15 +116,8 @@ const App = () => {
         />
       </div>
 
-      {/* Chat Pane - Right or Bottom (60%) */}
       <div className="chat-pane">
         <div className="main-container">
-          <ChatHeader
-            spotName={currentNode?.spotName}
-            quizScore={quizScore}
-            progress={progressPercent}
-          />
-
           <div className="scrollable-chat">
             {messageHistory.map((m, i) => (
               <ChatBubble

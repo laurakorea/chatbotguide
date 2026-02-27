@@ -11,6 +11,8 @@ const mapContainerStyle = {
     height: '100%'
 };
 
+import { Headphones } from 'lucide-react';
+
 const ChatMap = ({ coords, allSpots, onStartTour }) => {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -75,16 +77,19 @@ const ChatMap = ({ coords, allSpots, onStartTour }) => {
                         position={selectedSpot.coords}
                         onCloseClick={() => setSelectedSpot(null)}
                     >
-                        <div className="p-1 min-w-[120px]">
-                            <h3 className="font-bold text-[14px] mb-1">{selectedSpot.spotName}</h3>
+                        <div className="info-window-container">
+                            <h3 className="info-window-title">{selectedSpot.spotName}</h3>
                             <button
                                 onClick={() => {
                                     onStartTour(selectedSpot.id);
                                     setSelectedSpot(null);
                                 }}
-                                className="w-full bg-[#FEE500] text-black text-[12px] font-bold py-1.5 px-3 rounded-md hover:opacity-90 transition-opacity"
+                                className="pill-button"
                             >
-                                설명 듣기 🎧
+                                <span className="pill-button-icon">
+                                    <Headphones size={18} />
+                                </span>
+                                <span className="pill-button-text">설명 듣기</span>
                             </button>
                         </div>
                     </InfoWindow>

@@ -12,35 +12,53 @@
   --input-bg: #F1F1F1;
   --bubble-white: #FFFFFF;
   --header-white: #F9F9F9;
+  --system-blue: #007AFF;
+  --system-gray-6: #F2F2F7;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--kakao-bg);
+}
+
+/* 전체 레이아웃 설정 */
 .layout-wrapper {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-rows: auto 3.5fr 6.5fr;
+  /* 헤더(auto) + 지도(3.5) + 콘텐츠(6.5) */
   width: 100%;
   height: 100vh;
   overflow: hidden;
   background-color: var(--kakao-bg);
 }
 
+/* 지도 영역 */
 .map-pane {
-  flex: 4;
-  /* 40% Width */
+  width: 100%;
   height: 100%;
   position: relative;
   z-index: 5;
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #e5e3df;
 }
 
+/* 콘텐츠 영역 (바텀 시트 느낌) */
 .chat-pane {
-  flex: 6;
-  /* 60% Width */
-  height: 100%;
-  border-left: none;
-  display: flex;
-  justify-content: center;
+  background-color: var(--kakao-bg);
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  overflow: hidden;
+  margin-top: -20px;
+  /* 지도를 살짝 덮는 디자인 */
   position: relative;
   z-index: 10;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Updated main-container to fill the pane */
@@ -49,29 +67,15 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: var(--kakao-bg);
   position: relative;
-  max-width: none;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 769px) {
   .layout-wrapper {
-    flex-direction: column;
-  }
-
-  .map-pane {
-    flex: none;
-    height: 40vh;
-    /* 40% Height */
-    border-right: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .chat-pane {
-    flex: none;
-    height: 60vh;
-    /* 60% Height */
-    border-left: none;
+    max-width: 500px;
+    margin: 0 auto;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
   }
 }
 
