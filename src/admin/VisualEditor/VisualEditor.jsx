@@ -10,22 +10,25 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Plus, Download, Upload, Play, MapPin, HelpCircle, Save } from 'lucide-react';
-import { SpotNode, QuizNode } from './CustomNodes';
+import { Plus, Download, Upload, Play, MessageCircle, HelpCircle, Save } from 'lucide-react';
+import { ChatNode, QuizNode } from './CustomNodes';
 import Inspector from './Inspector';
 import styles from './VisualEditor.module.css';
 
+const RF_SPACING_X = 150;
+const RF_SPACING_Y = 150;
+
 const nodeTypes = {
-    spot: SpotNode,
+    chat: ChatNode,
     quiz: QuizNode
 };
 
 const initialNodes = [
     {
         id: 'intro',
-        type: 'spot',
+        type: 'chat',
         position: { x: 100, y: 100 },
-        data: { label: 'Intro Spot', contents: [{ type: 'text', value: 'Welcome!' }], options: [] }
+        data: { label: 'Intro Chat', contents: [{ type: 'text', value: 'Welcome!' }], options: [] }
     }
 ];
 
@@ -46,16 +49,15 @@ const VisualEditor = () => {
                 setTourTitle(tour.title);
                 const flow = tour.jsonData?.flow || [];
 
-                // Map the linear flow to ReactFlow nodes/edges
                 const rfNodes = flow.map((node, idx) => ({
                     id: node.id,
-                    type: node.options?.some(o => o.isCorrect) ? 'quiz' : 'spot',
-                    position: { x: 150 + idx * 250, y: 150 + (idx % 2) * 50 },
+                    type: node.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
+                    position: { x: RF_SPACING_X + idx * 280, y: RF_SPACING_Y },
                     data: {
                         label: node.spotName || node.id,
                         spotName: node.spotName,
-                        contents: node.contents,
-                        options: node.options,
+                        contents: node.contents || [],
+                        options: node.options || [],
                         coords: node.coords
                     }
                 }));
@@ -70,6 +72,7 @@ const VisualEditor = () => {
                                 target: opt.target,
                                 label: opt.label,
                                 animated: true,
+                                type: 'default',
                                 style: { stroke: '#007AFF', strokeWidth: 2 }
                             });
                         }
@@ -191,11 +194,11 @@ const VisualEditor = () => {
 
             <main className={styles.mainLayout}>
                 <aside className={styles.toolbar}>
-                    <button className={styles.toolbarItem} onClick={() => addNode('spot')} title="Add Spot">
-                        <MapPin size={24} />
+                    <button className={styles.toolbarItem} onClick={() => addNode('chat')} title="Add Chat Message">
+                        <MessageCircle size={22} />
                     </button>
                     <button className={styles.toolbarItem} onClick={() => addNode('quiz')} title="Add Quiz">
-                        <HelpCircle size={24} />
+                        <div className="font-black text-xs">Q</div>
                     </button>
                 </aside>
 

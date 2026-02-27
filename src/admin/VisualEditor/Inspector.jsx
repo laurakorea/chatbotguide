@@ -69,9 +69,9 @@ const Inspector = ({ selectedNode, onUpdateNode }) => {
                         placeholder="e.g. Colosseum Intro"
                     />
                 </div>
-                {selectedNode.type === 'spot' && (
+                {selectedNode.type === 'chat' && (
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>Spot Name (UI)</label>
+                        <label className={styles.label}>Display Name (Header)</label>
                         <input
                             className={styles.input}
                             value={data.spotName || ''}
@@ -136,22 +136,26 @@ const Inspector = ({ selectedNode, onUpdateNode }) => {
                             value={opt.label}
                             onChange={(e) => updateOption(idx, 'label', e.target.value)}
                         />
-                        <div className="flex items-center gap-2 mt-2">
-                            <input
-                                className={`${styles.input} flex-1`}
-                                placeholder="Target Node ID"
-                                value={opt.target}
-                                onChange={(e) => updateOption(idx, 'target', e.target.value)}
-                            />
+                        <div className="flex items-center gap-3 mt-3">
+                            <div className="flex-1">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Target Node ID</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="e.g. spot_02"
+                                    value={opt.target || ''}
+                                    onChange={(e) => updateOption(idx, 'target', e.target.value)}
+                                />
+                            </div>
                             {selectedNode.type === 'quiz' && (
-                                <label className="flex items-center gap-1 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={opt.isCorrect}
-                                        onChange={(e) => updateOption(idx, 'isCorrect', e.target.checked)}
-                                    />
-                                    <span className="text-[10px] font-bold">정답</span>
-                                </label>
+                                <div className="flex flex-col items-center">
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Correct</label>
+                                    <div
+                                        onClick={() => updateOption(idx, 'isCorrect', !opt.isCorrect)}
+                                        className={`w-10 h-6 rounded-full p-1 transition-colors cursor-pointer flex items-center ${opt.isCorrect ? 'bg-green-500 justify-end' : 'bg-gray-300 justify-start'}`}
+                                    >
+                                        <div className="w-4 h-4 rounded-full bg-white shadow-sm" />
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -161,9 +165,9 @@ const Inspector = ({ selectedNode, onUpdateNode }) => {
                 </button>
             </div>
 
-            {selectedNode.type === 'spot' && (
+            {selectedNode.type === 'chat' && (
                 <div className={styles.inspectorSection}>
-                    <h2 className={styles.sectionTitle}>Location (Coords)</h2>
+                    <h2 className={styles.sectionTitle}>Location (Map Pin)</h2>
                     <div className="flex gap-2">
                         <input
                             className={styles.input}
