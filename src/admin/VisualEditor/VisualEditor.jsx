@@ -42,71 +42,110 @@ const VisualEditor = () => {
     const [tourTitle, setTourTitle] = useState("New Tour Project");
     const [isLoading, setIsLoading] = useState(false);
 
-    // JSON to Flow Mapping & Auto-Layout
+    // JSON to Flow Mapping & Hierarchical Layout
     const loadSavedJson = useCallback((data) => {
-        console.log("loadSavedJson input data:", data);
         if (!data) return;
 
         let flowData = [];
-
-        // Handle varied structures: object with .flow or direct array
-        if (Array.isArray(data)) {
-            flowData = data;
-        } else if (data.flow && Array.isArray(data.flow)) {
-            flowData = data.flow;
-        } else if (typeof data === 'string') {
-            try {
-                const parsed = JSON.parse(data);
-                flowData = parsed.flow || (Array.isArray(parsed) ? parsed : []);
-            } catch (e) {
-                console.error("Failed to parse JSON string in loader", e);
-                return;
-            }
-        }
+        if (Array.isArray(data)) flowData = data;
+        else if (data.flow) flowData = data.flow;
+        else return;
 
         if (flowData.length === 0) return;
 
-        const newNodes = flowData.map((item, index) => {
-            const position = item.position || {
-                x: RF_SPACING_X + (index % 4) * 350,
-                y: RF_SPACING_Y + Math.floor(index / 4) * 250
-            };
+        // 1. Create Nodes
+        const tempNodes = flowData.map((item, index) => ({
+            id: item.id || `node_${index}`,
+            type: item.type === 'quiz' || item.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
+            position: item.position || { x: 0, y: 0 },
+            data: {
+                label: item.spotName || item.id || `Node ${index}`,
+                spotName: item.spotName,
+                contents: item.contents || [],
+                options: item.options || [],
+                coords: item.coords
+            }
+        }));
 
-            return {
-                id: item.id || `node_${index}`,
-                type: item.type === 'quiz' || item.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
-                position,
-                data: {
-                    label: item.spotName || item.id || `Node ${index}`,
-                    spotName: item.spotName,
-                    contents: item.contents || [],
-                    options: item.options || [],
-                    coords: item.coords
-                }
-            };
-        });
-
-        const newEdges = [];
+        // 2. Create Edges with Logic Colors
+        const tempEdges = [];
         flowData.forEach((item) => {
-            if (item.options && Array.isArray(item.options)) {
-                item.options.forEach((opt, optIdx) => {
+            if (item.options) {
+                item.options.forEach((opt, idx) => {
                     if (opt.target) {
-                        newEdges.push({
-                            id: `e-${item.id}-${opt.target}-${optIdx}`,
+                        const isCorrect = opt.isCorrect === true;
+                        tempEdges.push({
+                            id: `e-${item.id}-${opt.target}-${idx}`,
                             source: item.id,
                             target: opt.target,
                             label: opt.label || '',
-                            animated: true,
-                            type: 'default',
-                            style: { stroke: '#007AFF', strokeWidth: 2 }
+                            animated: isCorrect,
+                            style: {
+                                stroke: isCorrect ? '#34C759' : '#8E8E93',
+                                strokeWidth: isCorrect ? 3 : 2,
+                                opacity: isCorrect ? 1 : 0.5
+                            }
                         });
                     }
                 });
             }
         });
 
-        setNodes(newNodes);
-        setEdges(newEdges);
+        // 3. Hierarchical Layout (BFS based)
+        const levels = new Map();
+        const visited = new Set();
+        const queue = [];
+
+        // Find roots
+        const incoming = new Set(tempEdges.map(e => e.target));
+        const roots = tempNodes.filter(n => !incoming.has(n.id) || n.id === 'intro');
+        if (roots.length === 0 && tempNodes.length > 0) roots.push(tempNodes[0]);
+
+        roots.forEach(r => {
+            queue.push({ id: r.id, level: 0 });
+            visited.add(r.id);
+        });
+
+        while (queue.length > 0) {
+            const { id, level } = queue.shift();
+            if (!levels.has(level)) levels.set(level, []);
+            levels.get(level).push(id);
+
+            const children = tempEdges.filter(e => e.source === id).map(e => e.target);
+            children.forEach(cid => {
+                if (!visited.has(cid)) {
+                    visited.add(cid);
+                    queue.push({ id: cid, level: level + 1 });
+                }
+            });
+        }
+
+        // Assign final positions
+        const finalNodes = tempNodes.map(node => {
+            // If already has position, keep it
+            if (node.position.x !== 0 && node.position.y !== 0) return node;
+
+            let nodeLevel = 0;
+            let nodeIndex = 0;
+            levels.forEach((ids, lev) => {
+                const idx = ids.indexOf(node.id);
+                if (idx !== -1) {
+                    nodeLevel = lev;
+                    nodeIndex = idx;
+                }
+            });
+
+            return {
+                ...node,
+                position: {
+                    x: 350 * nodeIndex,
+                    y: 250 * nodeLevel
+                }
+            };
+        });
+
+        setNodes(finalNodes);
+        setEdges(tempEdges);
     }, []);
 
     // Initial Sync & Loading State
