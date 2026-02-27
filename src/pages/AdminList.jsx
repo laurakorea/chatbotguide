@@ -21,69 +21,63 @@ const AdminList = () => {
     };
 
     return (
-        <div className="admin-body min-h-screen bg-white p-4 md:p-10 font-sans text-gray-900 border-none shadow-none">
+        <div className="admin-body min-h-screen px-6 py-12 md:px-12 animate-ios-entry">
             <div className="max-w-6xl mx-auto">
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b pb-8">
+                <header className="admin-header flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-black">투어 관리 콘솔</h1>
-                        <p className="text-gray-500 mt-1">등록된 투어 콘텐츠를 관리하고 새 인터랙티브 가이드를 생성하세요.</p>
+                        <h1 className="admin-title">투어 관리 콘솔</h1>
+                        <p className="text-[17px] text-gray-500 font-medium">Apple HIG 가이드라인을 준수하는 인터랙티브 가이드를 생성하세요.</p>
                     </div>
                     <button
                         onClick={() => navigate('/admin/tours/new')}
-                        className="bg-black text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold hover:bg-gray-800 transition-all shadow-lg active:scale-95 text-sm"
+                        className="btn-primary-ios shadow-blue-500/20 shadow-xl"
                     >
-                        <Plus size={18} /> 새 투어 추가
+                        <Plus size={20} /> 새 투어 추가
                     </button>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {tours.length === 0 ? (
-                        <div className="col-span-full py-24 border-2 border-dashed border-gray-100 rounded-3xl text-center text-gray-400">
-                            등록된 투어가 없습니다. 우측 상단의 버튼을 눌러 시작하세요.
+                        <div className="col-span-full py-32 border border-gray-100 rounded-[20px] text-center bg-gray-50/50">
+                            <p className="text-gray-400 font-medium">등록된 투어가 없습니다. 새로운 여정을 시작해보세요.</p>
                         </div>
                     ) : (
                         tours.map(tour => (
-                            <div key={tour.id} className="group bg-white rounded-3xl border border-gray-100 overflow-hidden hover:border-black transition-all duration-300 shadow-sm hover:shadow-xl">
-                                <div className="aspect-video bg-gray-50 relative overflow-hidden">
+                            <div key={tour.id} className="dashboard-card group">
+                                <div className="aspect-[16/10] bg-gray-50 rounded-lg overflow-hidden mb-6 border border-gray-100">
                                     {tour.thumbnail ? (
-                                        <img src={tour.thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <img src={tour.thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-300 bg-gray-50">No Image</div>
+                                        <div className="w-full h-full flex items-center justify-center text-gray-200 uppercase font-black tracking-tighter text-4xl">Tour</div>
                                     )}
-                                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm border border-gray-100">
-                                        /{tour.slug}
-                                    </div>
                                 </div>
 
-                                <div className="p-6">
-                                    <h3 className="font-bold text-xl mb-6 line-clamp-1 text-black">{tour.title}</h3>
+                                <h3 className="text-xl font-bold mb-2 tracking-tight line-clamp-1">{tour.title}</h3>
+                                <p className="text-sm font-semibold text-blue-500 mb-6 font-mono tracking-tight underline underline-offset-4 decoration-blue-200"> tour/{tour.slug}</p>
 
-                                    <div className="flex items-center justify-between border-t pt-5">
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
-                                                className="p-3 text-gray-400 hover:text-black hover:bg-gray-50 rounded-2xl transition-all"
-                                                title="수정"
-                                            >
-                                                <Edit2 size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => deleteTour(tour.id)}
-                                                className="p-3 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all"
-                                                title="삭제"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-
-                                        <Link
-                                            to={`/tour/${tour.slug}`}
-                                            target="_blank"
-                                            className="px-5 py-2.5 bg-gray-900 text-white text-xs font-bold rounded-full flex items-center gap-2 hover:bg-black transition-all shadow-md"
+                                <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
+                                            className="p-2.5 text-gray-400 hover:text-black hover:bg-gray-100 rounded-xl transition-all"
                                         >
-                                            라이브 보기 <ExternalLink size={14} />
-                                        </Link>
+                                            <Edit2 size={20} />
+                                        </button>
+                                        <button
+                                            onClick={() => deleteTour(tour.id)}
+                                            className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
                                     </div>
+
+                                    <Link
+                                        to={`/tour/${tour.slug}`}
+                                        target="_blank"
+                                        className="btn-secondary-ios"
+                                    >
+                                        라이브 보기 <ExternalLink size={14} className="inline ml-1 mb-0.5" />
+                                    </Link>
                                 </div>
                             </div>
                         ))
