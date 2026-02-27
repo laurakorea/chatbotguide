@@ -125,12 +125,12 @@ const InnerVisualEditor = () => {
                         id: `e-${item.id}-${targetId}`,
                         source: item.id,
                         target: targetId,
-                        sourceHandle: 'source-top',    // Exit from Top
-                        targetHandle: 'target-bottom', // Enter from Bottom
+                        sourceHandle: 'source-bottom', // Exit from Bottom
+                        targetHandle: 'target-top',    // Enter from Top
                         type: 'logic',
                         label: group.length > 1 ? `${group.length} Paths` : (group[0].label || ''),
                         animated: hasCorrect,
-                        interactionWidth: 30, // 🚀 Even wider area
+                        interactionWidth: 30,
                         style: {
                             stroke: hasCorrect ? '#34C759' : '#8E8E93',
                             strokeWidth: hasCorrect ? 3 : 2,
@@ -189,7 +189,7 @@ const InnerVisualEditor = () => {
                 ...node,
                 position: {
                     x: 350 * nodeIndex,
-                    y: 1000 - (300 * nodeLevel) // 🚀 Bottom-to-Top: levels move UP (decreasing Y)
+                    y: 250 * nodeLevel // 🚀 Top-to-Bottom: Level 0 is at Top
                 }
             };
         });
@@ -251,8 +251,8 @@ const InnerVisualEditor = () => {
                 const newEdge = {
                     ...params,
                     id: `e-${params.source}-${params.target}`,
-                    sourceHandle: params.sourceHandle || 'source-top',
-                    targetHandle: params.targetHandle || 'target-bottom',
+                    sourceHandle: params.sourceHandle || 'source-bottom',
+                    targetHandle: params.targetHandle || 'target-top',
                     type: 'logic',
                     animated: isCorrect,
                     interactionWidth: 30,
