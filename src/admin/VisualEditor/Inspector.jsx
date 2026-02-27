@@ -130,25 +130,42 @@ const Inspector = ({ selectedNode, onUpdateNode }) => {
                 {data.options?.map((opt, idx) => (
                     <div key={idx} className={styles.contentItem}>
                         <button className={styles.removeBtn} onClick={() => removeOption(idx)}>×</button>
-                        <input
-                            className={`${styles.input} mb-2`}
-                            placeholder="Button Label"
-                            value={opt.label}
-                            onChange={(e) => updateOption(idx, 'label', e.target.value)}
-                        />
-                        <div className="flex items-center gap-3 mt-3">
+
+                        <div className="flex gap-2 mb-2">
                             <div className="flex-1">
-                                <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Target Node ID</label>
+                                <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Button Label</label>
                                 <input
                                     className={styles.input}
-                                    placeholder="e.g. spot_02"
+                                    placeholder="Button Label"
+                                    value={opt.label}
+                                    onChange={(e) => updateOption(idx, 'label', e.target.value)}
+                                />
+                            </div>
+                            <div className="w-24">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Target ID</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Target ID"
                                     value={opt.target || ''}
                                     onChange={(e) => updateOption(idx, 'target', e.target.value)}
                                 />
                             </div>
-                            {selectedNode.type === 'quiz' && (
-                                <div className="flex flex-col items-center">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Correct</label>
+                        </div>
+
+                        {selectedNode.type === 'quiz' && (
+                            <div className="flex items-start gap-3 mt-3">
+                                <div className="flex-1 bg-blue-50/50 p-2 rounded border border-dashed border-blue-100">
+                                    <label className="text-[10px] font-bold text-blue-500 uppercase mb-1 block">Feedback/Explanation</label>
+                                    <textarea
+                                        className={`${styles.textarea} bg-white`}
+                                        rows={2}
+                                        placeholder="선택 시 가이드가 해줄 대답..."
+                                        value={opt.feedback || ''}
+                                        onChange={(e) => updateOption(idx, 'feedback', e.target.value)}
+                                    />
+                                </div>
+                                <div className="flex flex-col items-center pt-5">
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Correct?</label>
                                     <div
                                         onClick={() => updateOption(idx, 'isCorrect', !opt.isCorrect)}
                                         className={`w-10 h-6 rounded-full p-1 transition-colors cursor-pointer flex items-center ${opt.isCorrect ? 'bg-green-500 justify-end' : 'bg-gray-300 justify-start'}`}
@@ -156,18 +173,6 @@ const Inspector = ({ selectedNode, onUpdateNode }) => {
                                         <div className="w-4 h-4 rounded-full bg-white shadow-sm" />
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                        {selectedNode.type === 'quiz' && (
-                            <div className="mt-3 bg-white/50 p-2 rounded border border-dashed border-gray-200">
-                                <label className="text-[10px] font-bold text-blue-500 uppercase mb-1 block">Feedback Content</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    rows={2}
-                                    placeholder="선택 후 가이드가 해줄 대답..."
-                                    value={opt.feedback || ''}
-                                    onChange={(e) => updateOption(idx, 'feedback', e.target.value)}
-                                />
                             </div>
                         )}
                     </div>

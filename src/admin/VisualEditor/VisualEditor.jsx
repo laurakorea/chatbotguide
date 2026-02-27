@@ -62,18 +62,36 @@ const InnerVisualEditor = () => {
         if (flowData.length === 0) return;
 
         // 1. Create Nodes
-        const tempNodes = flowData.map((item, index) => ({
-            id: item.id || `node_${index}`,
-            type: item.type === 'quiz' || item.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
-            position: item.position || { x: 0, y: 0 },
-            data: {
-                label: item.spotName || item.id || `Node ${index}`,
-                spotName: item.spotName,
-                contents: item.contents || [],
-                options: item.options || [],
-                coords: item.coords
+        // 🚀 Optimization: Collect all feedback values to identify redundant nodes
+        const allFeedbacks = new Set();
+        flowData.forEach(item => {
+            if (item.type === 'quiz' && item.options) {
+                item.options.forEach(opt => {
+                    if (opt.feedback) allFeedbacks.add(opt.feedback.trim());
+                });
             }
-        }));
+        });
+
+        const tempNodes = flowData
+            .filter(item => {
+                // If it's a CHAT node and its first content matches a feedback string exactly, it's redundant
+                if (item.type !== 'quiz' && item.contents?.length === 1 && item.contents[0].type === 'text') {
+                    if (allFeedbacks.has(item.contents[0].value.trim())) return false;
+                }
+                return true;
+            })
+            .map((item, index) => ({
+                id: item.id || `node_${index}`,
+                type: item.type === 'quiz' || item.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
+                position: item.position || { x: 0, y: 0 },
+                data: {
+                    label: item.spotName || item.id || `Node ${index}`,
+                    spotName: item.spotName,
+                    contents: item.contents || [],
+                    options: item.options || [],
+                    coords: item.coords
+                }
+            }));
 
         // 2. Create Edges with Logic Colors (Bundled)
         const tempEdges = [];
@@ -83,8 +101,18 @@ const InnerVisualEditor = () => {
                 const targetGroups = {};
                 item.options.forEach((opt) => {
                     if (opt.target) {
-                        if (!targetGroups[opt.target]) targetGroups[opt.target] = [];
-                        targetGroups[opt.target].push(opt);
+                        // 🚀 Trace targets if it points to a now hidden node
+                        let finalTarget = opt.target;
+                        const hiddenNode = flowData.find(n => n.id === opt.target);
+                        if (hiddenNode && !tempNodes.some(tn => tn.id === hiddenNode.id)) {
+                            // If the node is hidden (feedback node), point to ITS first target
+                            if (hiddenNode.options && hiddenNode.options.length > 0) {
+                                finalTarget = hiddenNode.options[0].target;
+                            }
+                        }
+
+                        if (!targetGroups[finalTarget]) targetGroups[finalTarget] = [];
+                        targetGroups[finalTarget].push(opt);
                     }
                 });
 
