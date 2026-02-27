@@ -5,6 +5,8 @@ import tourData from './data/tourData.json';
 import ChatHeader from './components/MapHeader'; // Will rename component later
 import ChatBubble from './components/ChatBubble';
 
+import ChatMap from './components/ChatMap';
+
 const App = () => {
   const [currentNodeId, setCurrentNodeId] = useState("intro");
   const [messageHistory, setMessageHistory] = useState([]);
@@ -14,10 +16,12 @@ const App = () => {
 
   const scrollRef = useRef(null);
 
+  const currentNode = tourData.flow.find(n => n.id === currentNodeId);
+
   // Sequence Logic
   useEffect(() => {
     let isMounted = true;
-    const node = tourData.flow.find(n => n.id === currentNodeId);
+    const node = currentNode;
     if (!node) return;
 
     const addItems = async () => {
@@ -30,10 +34,10 @@ const App = () => {
 
         if (contents[i].type === 'text') {
           setIsTyping(true);
-          await new Promise(r => setTimeout(r, 600)); // Reduced from 1200ms
+          await new Promise(r => setTimeout(r, 600));
           setIsTyping(false);
         } else {
-          await new Promise(r => setTimeout(r, 400)); // Reduced from 800ms
+          await new Promise(r => setTimeout(r, 400));
         }
 
         if (!isMounted) return;
@@ -42,7 +46,7 @@ const App = () => {
           sender: 'kiara',
           options: isLast ? options : null
         }]);
-        await new Promise(r => setTimeout(r, 200)); // Reduced from 400ms
+        await new Promise(r => setTimeout(r, 200));
       }
     };
 
@@ -53,17 +57,14 @@ const App = () => {
   const handleOptionClick = async (option, index) => {
     const { label, target, isCorrect } = option;
 
-    // Disable clicked options
     setMessageHistory(prev => {
       const next = [...prev];
       if (next[index]) next[index] = { ...next[index], options: null };
       return next;
     });
 
-    // User message bubble (Right)
     setMessageHistory(prev => [...prev, { value: label, sender: 'user', type: 'text' }]);
-
-    await new Promise(r => setTimeout(r, 400)); // Reduced from 600ms
+    await new Promise(r => setTimeout(r, 400));
 
     if (isCorrect) {
       setQuizScore(s => s + 1);
@@ -73,7 +74,6 @@ const App = () => {
     if (target) setCurrentNodeId(target);
   };
 
-  // Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -83,44 +83,51 @@ const App = () => {
   const progressPercent = ((tourData.flow.findIndex(n => n.id === currentNodeId) + 1) / tourData.flow.length) * 100;
 
   return (
-    <div className="main-container">
-      {/* Header: Centered & Clean */}
-      <ChatHeader
-        spotName={tourData.flow.find(n => n.id === currentNodeId)?.spotName}
-        quizScore={quizScore}
-        progress={progressPercent}
-      />
-
-      {/* Chat Area: Scrollable, fills available space */}
-      <div className="scrollable-chat">
-        {messageHistory.map((m, i) => (
-          <ChatBubble
-            key={i}
-            message={m}
-            isUser={m.sender === 'user'}
-            onOptionClick={(opt) => handleOptionClick(opt, i)}
-          />
-        ))}
-        {isTyping && <ChatBubble isTyping={true} />}
-        <div ref={scrollRef} className="h-1" />
+    <div className="layout-wrapper">
+      {/* Map Pane - Left or Top */}
+      <div className="map-pane">
+        <ChatMap coords={currentNode?.coords} />
       </div>
 
-      {/* Fixed Bottom Bar: White with circular send btn and sub-text */}
-      <div className="bottom-bar">
-        <div className="bottom-bar-content">
-          <div className="input-container">
-            <input
-              className="chat-input"
-              placeholder="AI 키아라에게 질문하세요! (로마 역사/지식)"
-              value={aiInput}
-              onChange={(e) => setAiInput(e.target.value)}
-            />
+      {/* Chat Pane - Right or Bottom */}
+      <div className="chat-pane">
+        <div className="main-container">
+          <ChatHeader
+            spotName={currentNode?.spotName}
+            quizScore={quizScore}
+            progress={progressPercent}
+          />
+
+          <div className="scrollable-chat">
+            {messageHistory.map((m, i) => (
+              <ChatBubble
+                key={i}
+                message={m}
+                isUser={m.sender === 'user'}
+                onOptionClick={(opt) => handleOptionClick(opt, i)}
+              />
+            ))}
+            {isTyping && <ChatBubble isTyping={true} />}
+            <div ref={scrollRef} className="h-1" />
           </div>
-          <button className="send-button-circle">
-            <CornerDownRight size={20} />
-          </button>
+
+          <div className="bottom-bar">
+            <div className="bottom-bar-content">
+              <div className="input-container">
+                <input
+                  className="chat-input"
+                  placeholder="AI 키아라에게 질문하세요!"
+                  value={aiInput}
+                  onChange={(e) => setAiInput(e.target.value)}
+                />
+              </div>
+              <button className="send-button-circle">
+                <CornerDownRight size={20} />
+              </button>
+            </div>
+            <p className="bottom-disclaimer">지식 가이드 키아라가 실시간으로 답변해 드립니다.</p>
+          </div>
         </div>
-        <p className="bottom-disclaimer">지식 가이드 키아라가 실시간으로 답변해 드립니다.</p>
       </div>
     </div>
   );

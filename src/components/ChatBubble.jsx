@@ -31,9 +31,6 @@ const ChatBubble = ({ message, onOptionClick, isUser, isTyping }) => {
     }
 
     const { type, value, caption, options } = message;
-
-    // Distinguish between yellow separate options and embedded action buttons
-    // Typically, quiz options are yellow bubbles, while "Action/Navigation" (like '십자가 앞에 도착했어요') are white inline cards
     const isActionOption = options && options.some(opt => opt.label.includes('도착') || opt.label.includes('확인'));
 
     return (
@@ -64,39 +61,24 @@ const ChatBubble = ({ message, onOptionClick, isUser, isTyping }) => {
                     )}
 
                     {type === 'text' && (
-                        <div className={`bubble-container ${isActionOption ? 'media-card' : ''}`}>
-                            <div className="bubble-base bubble-guide">
-                                {value}
-                            </div>
-
-                            {isActionOption && (
-                                <div className="inline-option-container">
-                                    {options.map((opt, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => onOptionClick && onOptionClick(opt)}
-                                            className="inline-option"
-                                        >
-                                            <span className="flex-1">{opt.label}</span>
-                                            <ChevronRight size={14} className="chevron-icon" />
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
+                        <div className="bubble-base bubble-guide">
+                            {value}
                         </div>
                     )}
                 </div>
             </div>
 
-            {options && !isActionOption && (
-                <div className="flex flex-col items-end gap-2 mt-1">
+            {/* Always force ALL options to the right side of the screen */}
+            {options && (
+                <div className="flex flex-col items-end gap-2 mt-1 w-full pl-10">
                     {options.map((opt, idx) => (
                         <button
                             key={idx}
                             onClick={() => onOptionClick && onOptionClick(opt)}
                             className="bubble-base bubble-option-yellow"
                         >
-                            <span className="flex-1">{opt.label}</span>
+                            <span className="flex-1 text-left">{opt.label}</span>
+                            {isActionOption && <ChevronRight size={14} className="chevron-icon ml-2 flex-shrink-0" />}
                         </button>
                     ))}
                 </div>
