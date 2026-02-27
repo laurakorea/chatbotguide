@@ -77,19 +77,19 @@ const ChatMap = ({ coords, allSpots, onStartTour }) => {
                         position={selectedSpot.coords}
                         onCloseClick={() => setSelectedSpot(null)}
                     >
-                        <div className="info-window-container">
-                            <h3 className="info-window-title">{selectedSpot.spotName}</h3>
+                        <div className="iw-content">
+                            <h3 className="iw-title">{selectedSpot.spotName}</h3>
                             <button
                                 onClick={() => {
                                     onStartTour(selectedSpot.id);
                                     setSelectedSpot(null);
                                 }}
-                                className="pill-button"
+                                className="btn-listen"
                             >
-                                <span className="pill-button-icon">
-                                    <Headphones size={18} />
+                                <span className="icon-wrapper">
+                                    <Headphones size={14} />
                                 </span>
-                                <span className="pill-button-text">설명 듣기</span>
+                                설명 듣기
                             </button>
                         </div>
                     </InfoWindow>
