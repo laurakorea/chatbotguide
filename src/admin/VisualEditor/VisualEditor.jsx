@@ -43,6 +43,7 @@ const VisualEditor = () => {
 
     // JSON to Flow Mapping & Auto-Layout
     const loadSavedJson = useCallback((data) => {
+        console.log("loadSavedJson input data:", data);
         if (!data) return;
 
         let flowData = [];
@@ -113,6 +114,7 @@ const VisualEditor = () => {
             setIsLoading(true);
             const savedTours = JSON.parse(localStorage.getItem('tours') || '[]');
             const tour = savedTours.find(t => t.id === id);
+            console.log("Loading Tour in Builder:", tour);
 
             // Artificial delay for Apple-style smooth entry
             const timer = setTimeout(() => {
@@ -284,10 +286,10 @@ const VisualEditor = () => {
 
             <main className={styles.mainLayout}>
                 <aside className={styles.toolbar}>
-                    <button className={styles.toolbarItem} onClick={() => addNode('chat')} title="Add Chat Message">
+                    <button type="button" className={styles.toolbarItem} onClick={() => addNode('chat')} title="Add Chat Message">
                         <MessageCircle size={22} />
                     </button>
-                    <button className={styles.toolbarItem} onClick={() => addNode('quiz')} title="Add Quiz">
+                    <button type="button" className={styles.toolbarItem} onClick={() => addNode('quiz')} title="Add Quiz">
                         <div className="font-black text-xs">Q</div>
                     </button>
                 </aside>
