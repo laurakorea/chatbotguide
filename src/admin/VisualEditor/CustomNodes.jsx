@@ -1,7 +1,68 @@
 import React, { memo } from 'react';
-import { Handle, Position } from 'reactflow';
-import { MessageCircle } from 'lucide-react';
+import { Handle, Position, getBezierPath, EdgeLabelRenderer, useReactFlow } from 'reactflow';
+import { MessageCircle, X } from 'lucide-react';
 import styles from './VisualEditor.module.css';
+
+export const LogicEdge = ({
+    id,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    style = {},
+    markerEnd,
+    label,
+    selected
+}) => {
+    const { setEdges } = useReactFlow();
+    const [edgePath, labelX, labelY] = getBezierPath({
+        sourceX,
+        sourceY,
+        sourcePosition,
+        targetPosition,
+        targetX,
+        targetY,
+    });
+
+    const onEdgeClick = (evt) => {
+        evt.stopPropagation();
+        setEdges((edges) => edges.filter((edge) => edge.id !== id));
+    };
+
+    return (
+        <>
+            <path
+                id={id}
+                style={style}
+                className={`react-flow__edge-path ${selected ? styles.selectedEdge : ''}`}
+                d={edgePath}
+                markerEnd={markerEnd}
+            />
+            {(selected || style.opacity === 1) && (
+                <EdgeLabelRenderer>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+                            fontSize: 10,
+                            pointerEvents: 'all',
+                        }}
+                        className="nodrag nopan"
+                    >
+                        <div className={styles.edgeLabelContainer}>
+                            {label && <span className={styles.edgeLabelText}>{label}</span>}
+                            <button className={styles.edgeDeleteBtn} onClick={onEdgeClick}>
+                                <X size={10} />
+                            </button>
+                        </div>
+                    </div>
+                </EdgeLabelRenderer>
+            )}
+        </>
+    );
+};
 
 export const ChatNode = memo(({ data, selected }) => {
     return (

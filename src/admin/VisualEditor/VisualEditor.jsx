@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ReactFlow, {
     addEdge,
     Background,
@@ -6,12 +6,15 @@ import ReactFlow, {
     applyEdgeChanges,
     applyNodeChanges,
     Panel,
-    MiniMap
+    MiniMap,
+    ReactFlowProvider,
+    useReactFlow,
+    updateEdge
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Plus, Download, Upload, Play, MessageCircle, HelpCircle, Save } from 'lucide-react';
-import { ChatNode, QuizNode, SpotNode } from './CustomNodes';
+import { ChatNode, QuizNode, SpotNode, LogicEdge } from './CustomNodes';
 import Inspector from './Inspector';
 import styles from './VisualEditor.module.css';
 
@@ -24,6 +27,10 @@ const nodeTypes = {
     spot: SpotNode
 };
 
+const edgeTypes = {
+    logic: LogicEdge
+};
+
 const initialNodes = [
     {
         id: 'intro',
@@ -33,9 +40,10 @@ const initialNodes = [
     }
 ];
 
-const VisualEditor = () => {
+const InnerVisualEditor = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { fitView } = useReactFlow();
     const [nodes, setNodes] = useState([]);
     const [edges, setEdges] = useState([]);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
@@ -89,6 +97,7 @@ const VisualEditor = () => {
                         id: `e-${item.id}-${targetId}`,
                         source: item.id,
                         target: targetId,
+                        type: 'logic',
                         label: group.length > 1 ? `${group.length} Paths` : (group[0].label || ''),
                         animated: hasCorrect,
                         style: {
@@ -156,7 +165,8 @@ const VisualEditor = () => {
 
         setNodes(finalNodes);
         setEdges(tempEdges);
-    }, []);
+        setTimeout(() => fitView({ duration: 800 }), 100);
+    }, [fitView]);
 
     // Initial Sync & Loading State
     useEffect(() => {
@@ -164,7 +174,6 @@ const VisualEditor = () => {
             setIsLoading(true);
             const savedTours = JSON.parse(localStorage.getItem('tours') || '[]');
             const tour = savedTours.find(t => t.id === id);
-            console.log("Loading Tour in Builder:", tour);
 
             // Artificial delay for Apple-style smooth entry
             const timer = setTimeout(() => {
@@ -177,7 +186,6 @@ const VisualEditor = () => {
 
             return () => clearTimeout(timer);
         } else {
-            // New tour starts with one intro node
             setNodes(initialNodes);
             setEdges([]);
         }
@@ -186,26 +194,92 @@ const VisualEditor = () => {
     const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
     const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
 
+    // 🚀 Enhanced Connection Handling
     const onConnect = useCallback((params) => {
-        const newEdge = { ...params, animated: true, style: { stroke: '#007AFF', strokeWidth: 2 } };
-        setEdges((eds) => addEdge(newEdge, eds));
+        // Validation: No self-loops
+        if (params.source === params.target) return;
 
-        // Auto-update target ID in the node data
+        // Validation: Prevent duplicate edges
+        const exists = edges.find(e => e.source === params.source && e.target === params.target);
+        if (exists) return;
+
         setNodes((nds) => nds.map(node => {
             if (node.id === params.source) {
                 const updatedOptions = [...(node.data.options || [])];
-                // Try to find an option without a target, or add a new one
-                let optionToUpdate = updatedOptions.find(o => !o.target);
-                if (optionToUpdate) {
-                    optionToUpdate.target = params.target;
+
+                // Find or create an option to host this target
+                let opt = updatedOptions.find(o => !o.target);
+                if (!opt) {
+                    opt = { label: 'Next Step', target: params.target };
+                    updatedOptions.push(opt);
                 } else {
-                    updatedOptions.push({ label: 'Next', target: params.target });
+                    opt.target = params.target;
                 }
+
+                const isCorrect = opt.isCorrect === true;
+                const newEdge = {
+                    ...params,
+                    id: `e-${params.source}-${params.target}`,
+                    type: 'logic',
+                    animated: isCorrect,
+                    style: {
+                        stroke: isCorrect ? '#34C759' : '#8E8E93',
+                        strokeWidth: isCorrect ? 3 : 2,
+                        opacity: isCorrect ? 1 : 0.6
+                    }
+                };
+
+                setEdges((eds) => addEdge(newEdge, eds));
                 return { ...node, data: { ...node.data, options: updatedOptions } };
             }
             return node;
         }));
-    }, []);
+
+        setTimeout(() => fitView({ duration: 400 }), 100);
+    }, [edges, fitView]);
+
+    // 🚀 Support Re-connecting Edges
+    const onEdgeUpdate = useCallback((oldEdge, newConnection) => {
+        if (newConnection.source === newConnection.target) return;
+
+        setEdges((els) => updateEdge(oldEdge, newConnection, els));
+
+        // Sync node data
+        setNodes((nds) => nds.map(node => {
+            if (node.id === oldEdge.source) {
+                const updatedOptions = (node.data.options || []).map(opt => {
+                    if (opt.target === oldEdge.target) {
+                        return { ...opt, target: newConnection.target };
+                    }
+                    return opt;
+                });
+                return { ...node, data: { ...node.data, options: updatedOptions } };
+            }
+            return node;
+        }));
+
+        setTimeout(() => fitView({ duration: 400 }), 100);
+    }, [fitView]);
+
+    // 🚀 Handle Edge Deletion (Centralized)
+    const onEdgesDelete = useCallback((deletedEdges) => {
+        deletedEdges.forEach(edge => {
+            setNodes((nds) => nds.map(node => {
+                if (node.id === edge.source) {
+                    const updatedOptions = (node.data.options || []).map(opt => {
+                        // If this option pointed to the deleted target, clear it
+                        if (opt.target === edge.target) {
+                            return { ...opt, target: null };
+                        }
+                        return opt;
+                    });
+                    return { ...node, data: { ...node.data, options: updatedOptions } };
+                }
+                return node;
+            }));
+        });
+        setTimeout(() => fitView({ duration: 400 }), 100);
+    }, [fitView]);
 
     const onNodeClick = (_, node) => setSelectedNodeId(node.id);
     const onPaneClick = () => setSelectedNodeId(null);
@@ -234,9 +308,10 @@ const VisualEditor = () => {
         reader.onload = (event) => {
             try {
                 const json = JSON.parse(event.target.result);
-                if (json.flow) {
+                const flow = json.flow || (Array.isArray(json) ? json : null);
+                if (flow) {
                     setTimeout(() => {
-                        loadSavedJson(json.flow);
+                        loadSavedJson(flow);
                         setIsLoading(false);
                     }, 600);
                 }
@@ -251,12 +326,12 @@ const VisualEditor = () => {
     const exportJson = () => {
         const flow = nodes.map(n => ({
             id: n.id,
-            type: n.type, // 'chat' or 'quiz'
+            type: n.type,
             spotName: n.data.spotName || n.data.label,
             contents: n.data.contents || [],
             options: n.data.options || [],
             coords: n.data.coords,
-            position: n.position // Save visual position
+            position: n.position
         }));
 
         const tourExport = { flow };
@@ -305,7 +380,6 @@ const VisualEditor = () => {
 
     return (
         <div className={styles.editorPage}>
-            {/* Skeleton Loading Overlay */}
             {isLoading && (
                 <div className="absolute inset-0 z-[2000] bg-white/80 backdrop-blur-md flex items-center justify-center animate-pulse">
                     <div className="flex flex-col items-center">
@@ -351,9 +425,13 @@ const VisualEditor = () => {
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
                         onConnect={onConnect}
+                        onEdgeUpdate={onEdgeUpdate}
+                        onEdgesDelete={onEdgesDelete}
                         onNodeClick={onNodeClick}
                         onPaneClick={onPaneClick}
                         nodeTypes={nodeTypes}
+                        edgeTypes={edgeTypes}
+                        deleteKeyCode={["Backspace", "Delete"]}
                         fitView
                     >
                         <Background variant="dots" gap={20} size={1} color="#C7C7CC" />
@@ -370,5 +448,11 @@ const VisualEditor = () => {
         </div>
     );
 };
+
+const VisualEditor = () => (
+    <ReactFlowProvider>
+        <InnerVisualEditor />
+    </ReactFlowProvider>
+);
 
 export default VisualEditor;
