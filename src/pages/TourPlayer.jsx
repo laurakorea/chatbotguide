@@ -5,6 +5,7 @@ import { CornerDownRight, ArrowLeft } from 'lucide-react';
 import ChatHeader from '../components/MapHeader';
 import ChatBubble from '../components/ChatBubble';
 import ChatMap from '../components/ChatMap';
+import '../chat.css';
 
 const TourPlayer = () => {
     const { slug } = useParams();

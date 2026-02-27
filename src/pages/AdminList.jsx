@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, ExternalLink } from 'lucide-react';
+import '../admin.css';
 
 const AdminList = () => {
     const [tours, setTours] = useState([]);
@@ -20,7 +21,7 @@ const AdminList = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white p-4 md:p-10 font-sans text-gray-900 border-none shadow-none">
+        <div className="admin-body min-h-screen bg-white p-4 md:p-10 font-sans text-gray-900 border-none shadow-none">
             <div className="max-w-6xl mx-auto">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b pb-8">
                     <div>

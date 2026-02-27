@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Upload, Save, Eye } from 'lucide-react';
+import '../admin.css';
 
 const AdminEdit = () => {
     const { id } = useParams();
@@ -89,7 +90,7 @@ const AdminEdit = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white p-4 md:p-10 font-sans text-gray-900">
+        <div className="admin-body min-h-screen bg-white p-4 md:p-10 font-sans text-gray-900">
             <div className="max-w-4xl mx-auto">
                 <header className="flex items-center gap-6 mb-12 border-b pb-8">
                     <button

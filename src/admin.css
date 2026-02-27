@@ -1,0 +1,23 @@
+/* Admin Dashboard Specific Styles */
+
+.admin-body {
+    background-color: #ffffff;
+    min-height: 100vh;
+    color: #111827;
+}
+
+/* Ensure admin content isn't hidden by scroll locks from Main UI if any */
+.admin-container {
+    overflow-y: auto !important;
+    height: auto !important;
+}
+
+/* Custom shadow for dashboard cards */
+.dashboard-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
