@@ -80,16 +80,34 @@ const App = () => {
     }
   }, [messageHistory, isTyping]);
 
-  const progressPercent = ((tourData.flow.findIndex(n => n.id === currentNodeId) + 1) / tourData.flow.length) * 100;
+  const allSpots = tourData.flow.filter(node => node.coords && node.spotName);
+
+  const startTourAt = async (spotId) => {
+    const node = tourData.flow.find(n => n.id === spotId);
+    if (!node) return;
+
+    // Add a greeting from Kiara when jumping from map
+    setMessageHistory(prev => [...prev, {
+      value: `좋아요! 여기는 ${node.spotName}입니다. 설명을 시작할까요?`,
+      sender: 'kiara',
+      type: 'text'
+    }]);
+
+    setCurrentNodeId(spotId);
+  };
 
   return (
     <div className="layout-wrapper">
-      {/* Map Pane - Left or Top */}
+      {/* Map Pane - Left or Top (40%) */}
       <div className="map-pane">
-        <ChatMap coords={currentNode?.coords} />
+        <ChatMap
+          coords={currentNode?.coords}
+          allSpots={allSpots}
+          onStartTour={startTourAt}
+        />
       </div>
 
-      {/* Chat Pane - Right or Bottom */}
+      {/* Chat Pane - Right or Bottom (60%) */}
       <div className="chat-pane">
         <div className="main-container">
           <ChatHeader

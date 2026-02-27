@@ -24,16 +24,19 @@
 }
 
 .map-pane {
-  flex: 1.2;
+  flex: 4;
+  /* 40% Width */
   height: 100%;
   position: relative;
   z-index: 5;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .chat-pane {
-  flex: 1;
+  flex: 6;
+  /* 60% Width */
   height: 100%;
-  border-left: 1px solid rgba(0, 0, 0, 0.05);
+  border-left: none;
   display: flex;
   justify-content: center;
   position: relative;
@@ -48,6 +51,7 @@
   height: 100%;
   background-color: var(--kakao-bg);
   position: relative;
+  max-width: none;
 }
 
 @media (max-width: 768px) {
@@ -58,12 +62,16 @@
   .map-pane {
     flex: none;
     height: 40vh;
+    /* 40% Height */
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   .chat-pane {
-    flex: 1;
+    flex: none;
+    height: 60vh;
+    /* 60% Height */
     border-left: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
   }
 }
 
