@@ -10,7 +10,9 @@ const App = () => {
   // Seed initial data if empty
   useEffect(() => {
     const savedTours = JSON.parse(localStorage.getItem('tours') || '[]');
-    if (savedTours.length === 0) {
+    const hasOldData = savedTours.some(t => t.id === 'default-tour' && !JSON.stringify(t.jsonData).includes('feedback'));
+
+    if (savedTours.length === 0 || hasOldData) {
       const initialTour = {
         id: 'default-tour',
         title: '로마 콜로세움 챗봇투어',
@@ -19,7 +21,14 @@ const App = () => {
         thumbnail: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
         updatedAt: new Date().toISOString()
       };
-      localStorage.setItem('tours', JSON.stringify([initialTour]));
+
+      let updated;
+      if (hasOldData) {
+        updated = savedTours.map(t => t.id === 'default-tour' ? initialTour : t);
+      } else {
+        updated = [initialTour];
+      }
+      localStorage.setItem('tours', JSON.stringify(updated));
     }
   }, []);
 

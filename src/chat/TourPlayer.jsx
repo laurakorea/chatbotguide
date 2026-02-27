@@ -74,16 +74,27 @@ const TourPlayer = () => {
     }, [currentNodeId, tourData]);
 
     const handleOptionClick = async (option, index) => {
-        const { label, target, isCorrect } = option;
+        const { label, target, isCorrect, feedback } = option;
 
+        // Hide options after click
         setMessageHistory(prev => {
             const next = [...prev];
             if (next[index]) next[index] = { ...next[index], options: null };
             return next;
         });
 
+        // 1. Show user choice
         setMessageHistory(prev => [...prev, { value: label, sender: 'user', type: 'text' }]);
         await new Promise(r => setTimeout(r, 400));
+
+        // 2. Handle Feedback if integrated
+        if (feedback) {
+            setIsTyping(true);
+            await new Promise(r => setTimeout(r, 600));
+            setIsTyping(false);
+            setMessageHistory(prev => [...prev, { value: feedback, sender: 'kiara', type: 'text' }]);
+            await new Promise(r => setTimeout(r, 1200)); // Give time to read
+        }
 
         if (isCorrect) {
             setQuizScore(s => s + 1);
