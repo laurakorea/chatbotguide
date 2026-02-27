@@ -13,7 +13,21 @@ const mapContainerStyle = {
 
 import { Headphones } from 'lucide-react';
 
-const ChatMap = ({ coords, allSpots, onStartTour }) => {
+const getMarkerIcon = (number, isActive) => {
+    const color = isActive ? "#000000" : "#FF5252";
+    const svg = `
+    <svg width="32" height="42" viewBox="0 0 32 42" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 0C7.16 0 0 7.16 0 16c0 12 16 26 16 26s16-14 16-26c0-8.84-7.16-16-16-16z" fill="${color}"/>
+        <circle cx="16" cy="16" r="10" fill="white"/>
+        <text x="16" y="20" font-family="Arial" font-size="12" font-weight="bold" fill="${color}" text-anchor="middle">${number}</text>
+    </svg>`;
+    return {
+        url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+        anchor: typeof google !== 'undefined' ? new google.maps.Point(16, 42) : null
+    };
+};
+
+const ChatMap = ({ coords, currentNodeId, allSpots, onStartTour }) => {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -63,14 +77,17 @@ const ChatMap = ({ coords, allSpots, onStartTour }) => {
                 }}
             >
                 {/* Render markers for all spots */}
-                {allSpots?.map((spot) => (
-                    <Marker
-                        key={spot.id}
-                        position={spot.coords}
-                        onClick={() => handleMarkerClick(spot)}
-                    // Highlight current spot marker if needed (optional)
-                    />
-                ))}
+                {allSpots?.map((spot, index) => {
+                    const isActive = spot.id === currentNodeId;
+                    return (
+                        <Marker
+                            key={spot.id}
+                            position={spot.coords}
+                            onClick={() => handleMarkerClick(spot)}
+                            icon={getMarkerIcon(index + 1, isActive)}
+                        />
+                    );
+                })}
 
                 {selectedSpot && (
                     <InfoWindow

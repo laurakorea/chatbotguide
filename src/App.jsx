@@ -111,6 +111,7 @@ const App = () => {
       <div className="map-pane">
         <ChatMap
           coords={currentNode?.coords}
+          currentNodeId={currentNodeId}
           allSpots={allSpots}
           onStartTour={startTourAt}
         />
