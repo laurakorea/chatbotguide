@@ -125,6 +125,8 @@ const InnerVisualEditor = () => {
                         id: `e-${item.id}-${targetId}`,
                         source: item.id,
                         target: targetId,
+                        sourceHandle: 'source-right', // Force Right exit
+                        targetHandle: 'target-left',   // Force Left entry
                         type: 'logic',
                         label: group.length > 1 ? `${group.length} Paths` : (group[0].label || ''),
                         animated: hasCorrect,
@@ -185,8 +187,8 @@ const InnerVisualEditor = () => {
             return {
                 ...node,
                 position: {
-                    x: 350 * nodeIndex,
-                    y: 250 * nodeLevel
+                    x: 450 * nodeLevel, // Use level for horizontal progression
+                    y: 250 * nodeIndex  // Use index within level for vertical spacing
                 }
             };
         });
@@ -248,6 +250,8 @@ const InnerVisualEditor = () => {
                 const newEdge = {
                     ...params,
                     id: `e-${params.source}-${params.target}`,
+                    sourceHandle: params.sourceHandle || 'source-right',
+                    targetHandle: params.targetHandle || 'target-left',
                     type: 'logic',
                     animated: isCorrect,
                     style: {
