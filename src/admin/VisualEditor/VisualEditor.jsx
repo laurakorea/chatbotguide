@@ -50,6 +50,53 @@ const InnerVisualEditor = () => {
     const [tourTitle, setTourTitle] = useState("New Tour Project");
     const [isLoading, setIsLoading] = useState(false);
 
+    // 🚀 Undo/Redo & History State
+    const [history, setHistory] = useState({ past: [], future: [] });
+    const [toasts, setToasts] = useState([]);
+
+    const showToast = useCallback((message) => {
+        const id = Date.now();
+        setToasts(prev => [...prev, { id, message }]);
+        setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 2000);
+    }, []);
+
+    const saveHistory = useCallback(() => {
+        setHistory(prev => ({
+            past: [...prev.past.slice(-20), { nodes: JSON.parse(JSON.stringify(nodes)), edges: JSON.parse(JSON.stringify(edges)) }],
+            future: []
+        }));
+    }, [nodes, edges]);
+
+    const undo = useCallback(() => {
+        if (history.past.length === 0) return;
+        const previous = history.past[history.past.length - 1];
+        const newPast = history.past.slice(0, history.past.length - 1);
+
+        setHistory({
+            past: newPast,
+            future: [{ nodes: JSON.parse(JSON.stringify(nodes)), edges: JSON.parse(JSON.stringify(edges)) }, ...history.future]
+        });
+
+        setNodes(previous.nodes);
+        setEdges(previous.edges);
+        showToast("되돌리기 (Undo)");
+    }, [history, nodes, edges, showToast]);
+
+    const redo = useCallback(() => {
+        if (history.future.length === 0) return;
+        const next = history.future[0];
+        const newFuture = history.future.slice(1);
+
+        setHistory({
+            past: [...history.past, { nodes: JSON.parse(JSON.stringify(nodes)), edges: JSON.parse(JSON.stringify(edges)) }],
+            future: newFuture
+        });
+
+        setNodes(next.nodes);
+        setEdges(next.edges);
+        showToast("다시 실행 (Redo)");
+    }, [history, nodes, edges, showToast]);
+
     // JSON to Flow Mapping & Hierarchical Layout
     const loadSavedJson = useCallback((data) => {
         if (!data) return;
@@ -334,6 +381,7 @@ const InnerVisualEditor = () => {
     const onPaneClick = () => setSelectedNodeId(null);
 
     const addNode = (type) => {
+        saveHistory();
         const id = `${type}_${Date.now().toString().slice(-4)}`;
         const newNode = {
             id,
@@ -342,7 +390,67 @@ const InnerVisualEditor = () => {
             data: { label: `New ${type}`, contents: [], options: [] }
         };
         setNodes((nds) => [...nds, newNode]);
+        showToast("노드 추가됨");
     };
+
+    // 🚀 Clone / Copy Logic
+    const cloneNode = useCallback((nodeId) => {
+        const sourceNode = nodes.find(n => n.id === nodeId);
+        if (!sourceNode) return;
+
+        saveHistory();
+        const newId = `${sourceNode.type}_${Date.now().toString().slice(-4)}`;
+        const newNode = {
+            ...JSON.parse(JSON.stringify(sourceNode)),
+            id: newId,
+            selected: true,
+            position: {
+                x: sourceNode.position.x + 40,
+                y: sourceNode.position.y + 40
+            }
+        };
+        setNodes(nds => [...nds.map(n => ({ ...n, selected: false })), newNode]);
+        setSelectedNodeId(newId);
+        showToast("노드 복제됨");
+    }, [nodes, saveHistory, showToast]);
+
+    // 🚀 Keyboard Shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            const isMeta = e.ctrlKey || e.metaKey;
+
+            // Undo/Redo
+            if (isMeta && e.key === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) redo();
+                else undo();
+            }
+
+            // fitView (Ctrl + 0)
+            if (isMeta && e.key === '0') {
+                e.preventDefault();
+                fitView({ duration: 800 });
+                showToast("화면 최적화");
+            }
+
+            // Clone (Ctrl + D)
+            if (isMeta && (e.key === 'd' || e.key === 'D')) {
+                if (selectedNodeId) {
+                    e.preventDefault();
+                    cloneNode(selectedNodeId);
+                }
+            }
+
+            // Save (Ctrl + S)
+            if (isMeta && e.key === 's') {
+                e.preventDefault();
+                saveToProject();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [undo, redo, fitView, selectedNodeId, cloneNode, showToast]);
 
     const updateNodeData = (nodeId, newData) => {
         setNodes((nds) => nds.map((n) => (n.id === nodeId ? { ...n, data: newData } : n)));
@@ -475,19 +583,43 @@ const InnerVisualEditor = () => {
                         onEdgesChange={onEdgesChange}
                         onConnect={onConnect}
                         onEdgeUpdate={onEdgeUpdate}
-                        onEdgesDelete={onEdgesDelete}
-                        onNodesDelete={onNodesDelete}
+                        onEdgesDelete={(eds) => {
+                            saveHistory();
+                            onEdgesDelete(eds);
+                            showToast("연결 삭제됨");
+                        }}
+                        onNodesDelete={(nds) => {
+                            if (nds.some(n => n.id === 'intro')) {
+                                showToast("Intro 노드는 삭제할 수 없습니다.");
+                                return;
+                            }
+                            saveHistory();
+                            onNodesDelete(nds);
+                            showToast("노드 삭제됨");
+                        }}
+                        onNodeDragStart={() => saveHistory()} // 🚀 Save before drag
                         onNodeClick={onNodeClick}
                         onPaneClick={onPaneClick}
                         nodeTypes={nodeTypes}
                         edgeTypes={edgeTypes}
                         deleteKeyCode={["Backspace", "Delete"]}
+                        selectionKeyCode="Shift"
+                        multiSelectionKeyCode="Control"
                         fitView
                     >
                         <Background variant="dots" gap={20} size={1} color="#C7C7CC" />
                         <Controls />
                         <MiniMap nodeStrokeWidth={3} zoomable pannable />
                     </ReactFlow>
+
+                    {/* 🚀 Apple Style Toasts */}
+                    <div className={styles.toastContainer}>
+                        {toasts.map(toast => (
+                            <div key={toast.id} className={styles.toast}>
+                                {toast.message}
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <Inspector
