@@ -1,0 +1,210 @@
+/* Admin Dashboard - macOS System Settings Style */
+
+.appleAdminTheme {
+    background-color: #F2F2F7;
+    /* macOS system background */
+    min-height: 100vh;
+    color: #1C1C1E;
+    font-family: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    letter-spacing: -0.022em;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 20px;
+}
+
+.adminContainer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.adminHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 32px;
+    padding: 0 8px;
+}
+
+.adminTitle {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin-bottom: 4px;
+}
+
+.adminSubtitle {
+    font-size: 17px;
+    color: #8E8E93;
+    font-weight: 400;
+}
+
+/* macOS Style Cards */
+.cardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.dashboardCard {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1.0), box-shadow 0.2s ease;
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+}
+
+.dashboardCard:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.cardThumb {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: 8px;
+    background-color: #E5E5EA;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.cardThumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cardTitle {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.cardSlug {
+    font-size: 13px;
+    font-weight: 500;
+    color: #007AFF;
+    margin-bottom: 20px;
+}
+
+.cardFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 0.5px solid #F2F2F7;
+    padding-top: 12px;
+}
+
+/* System Buttons */
+.btnPrimary {
+    background-color: #007AFF;
+    color: #FFFFFF;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s;
+}
+
+.btnPrimary:hover {
+    opacity: 0.9;
+}
+
+.btnSecondary {
+    background-color: #E5E5EA;
+    color: #007AFF;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btnSecondary:hover {
+    background-color: #D1D1D6;
+}
+
+.iconButton {
+    padding: 8px;
+    color: #8E8E93;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.1s;
+}
+
+.iconButton:hover {
+    background-color: #F2F2F7;
+    color: #000;
+}
+
+.deleteButton:hover {
+    background-color: #FF3B3015;
+    color: #FF3B30;
+}
+
+/* Form Styles */
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8E8E93;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    margin-left: 4px;
+}
+
+.input {
+    width: 100%;
+    background-color: #FFFFFF;
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 16px;
+    color: #000;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #007AFF;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+}
+
+.textarea {
+    width: 100%;
+    min-height: 200px;
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: "SF Mono", "Menlo", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+@keyframes appleFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fadeIn {
+    animation: appleFadeIn 0.5s cubic-bezier(0.25, 0.1, 0.25, 1.0) forwards;
+}

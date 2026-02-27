@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
-import { CornerDownRight, ArrowLeft } from 'lucide-react';
-import ChatHeader from '../components/MapHeader';
-import ChatBubble from '../components/ChatBubble';
-import ChatMap from '../components/ChatMap';
-import '../chat.css';
+import { Send } from 'lucide-react';
+import ChatHeader from './ChatHeader';
+import ChatBubble from './ChatBubble';
+import ChatMap from './ChatMap';
+import styles from './Chat.module.css';
 
 const TourPlayer = () => {
     const { slug } = useParams();
@@ -101,14 +101,17 @@ const TourPlayer = () => {
 
     if (!tourData) {
         return (
-            <div className="flex flex-col items-center justify-center h-screen bg-[#BACEE0] p-10 text-center">
-                <h2 className="text-xl font-bold mb-4">투어를 찾을 수 없습니다.</h2>
-                <button
-                    onClick={() => navigate('/')}
-                    className="bg-white px-6 py-2 rounded-full font-bold shadow-sm"
-                >
-                    홈으로 이동
-                </button>
+            <div className={styles.appleChatTheme}>
+                <div className="flex flex-col items-center justify-center h-screen p-10 text-center">
+                    <h2 className="text-2xl font-bold mb-4 tracking-tight">투어를 찾을 수 없습니다.</h2>
+                    <p className="text-gray-500 mb-8">목록에서 다시 시도해 주세요.</p>
+                    <button
+                        onClick={() => navigate('/')}
+                        className="bg-[#F2F2F7] text-[#007AFF] px-8 py-3 rounded-xl font-bold"
+                    >
+                        관리자 목록으로 이동
+                    </button>
+                </div>
             </div>
         );
     }
@@ -129,8 +132,8 @@ const TourPlayer = () => {
     };
 
     return (
-        <div id="user-page">
-            <div className="layout-wrapper">
+        <div className={styles.appleChatTheme}>
+            <div className={styles.layoutWrapper}>
                 <ChatHeader
                     spotName={currentNode?.spotName}
                     quizScore={quizScore}
@@ -138,48 +141,42 @@ const TourPlayer = () => {
                     onOpenMap={() => setIsMapOpen(true)}
                 />
 
-                <div className="chat-pane">
-                    <div className="main-container">
-                        <div className="scrollable-chat">
-                            {messageHistory.map((m, i) => (
-                                <ChatBubble
-                                    key={i}
-                                    message={m}
-                                    isUser={m.sender === 'user'}
-                                    onOptionClick={(opt) => handleOptionClick(opt, i)}
-                                />
-                            ))}
-                            {isTyping && <ChatBubble isTyping={true} />}
-                            <div ref={scrollRef} className="h-1" />
-                        </div>
+                <div className={styles.scrollableChat}>
+                    {messageHistory.map((m, i) => (
+                        <ChatBubble
+                            key={i}
+                            message={m}
+                            isUser={m.sender === 'user'}
+                            onOptionClick={(opt) => handleOptionClick(opt, i)}
+                        />
+                    ))}
+                    {isTyping && <ChatBubble isTyping={true} />}
+                    <div ref={scrollRef} className="h-1" />
+                </div>
 
-                        <div className="bottom-bar">
-                            <div className="bottom-bar-content">
-                                <div className="input-container">
-                                    <input
-                                        className="chat-input"
-                                        placeholder="AI 키아라에게 질문하세요!"
-                                        value={aiInput}
-                                        onChange={(e) => setAiInput(e.target.value)}
-                                    />
-                                </div>
-                                <button className="send-button-circle">
-                                    <CornerDownRight size={20} />
-                                </button>
-                            </div>
-                            <p className="bottom-disclaimer">지식 가이드 키아라가 실시간으로 답변해 드립니다.</p>
-                        </div>
+                <div className={styles.bottomBar}>
+                    <div className={styles.inputContainer}>
+                        <input
+                            className={styles.chatInput}
+                            placeholder="질문을 입력하세요..."
+                            value={aiInput}
+                            onChange={(e) => setAiInput(e.target.value)}
+                        />
+                        <button className={styles.sendButton}>
+                            <Send size={18} />
+                        </button>
                     </div>
+                    <p className={styles.disclaimer}>가이드 키아라가 실시간으로 답변합니다.</p>
                 </div>
 
                 {isMapOpen && (
-                    <div className="map-modal-overlay" onClick={() => setIsMapOpen(false)}>
-                        <div className="map-modal-content" onClick={(e) => e.stopPropagation()}>
-                            <div className="map-modal-header">
-                                <h2 className="text-[16px] font-bold">투어 지도</h2>
-                                <button onClick={() => setIsMapOpen(false)} className="close-modal-btn">닫기</button>
+                    <div className={styles.modalOverlay} onClick={() => setIsMapOpen(false)}>
+                        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                            <div className={styles.modalHeader}>
+                                <h2 className="text-[17px] font-bold">투어 지도</h2>
+                                <button onClick={() => setIsMapOpen(false)} className="text-[#007AFF] font-bold">닫기</button>
                             </div>
-                            <div className="map-modal-body">
+                            <div className="flex-1">
                                 <ChatMap
                                     coords={currentNode?.coords}
                                     currentNodeId={currentNodeId}

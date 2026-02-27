@@ -2,12 +2,6 @@
 
 :root {
   --system-blue: #007AFF;
-  --system-gray: #8E8E93;
-  --system-gray-2: #AEAEB2;
-  --system-gray-3: #C7C7CC;
-  --system-gray-4: #D1D1D6;
-  --system-gray-5: #E5E5EA;
-  --system-gray-6: #F2F2F7;
   --apple-ease: cubic-bezier(0.25, 0.1, 0.25, 1.0);
 }
 
@@ -15,35 +9,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-html,
-body {
-  font-family: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  letter-spacing: -0.02em;
-  line-height: 1.6;
-  background-color: #ffffff;
-  color: #000000;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  letter-spacing: -0.03em;
-  font-weight: 600;
-}
-
-button {
-  transition: all 0.2s var(--apple-ease);
-  cursor: pointer;
-}
-
-button:active {
-  transform: scale(0.96);
-  opacity: 0.8;
 }

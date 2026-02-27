@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import TourPlayer from './pages/TourPlayer';
-import AdminList from './pages/AdminList';
-import AdminEdit from './pages/AdminEdit';
+import TourPlayer from './chat/TourPlayer';
+import AdminList from './admin/AdminList';
+import AdminEdit from './admin/AdminEdit';
 import tourData from './data/tourData.json';
 
 const App = () => {
@@ -25,7 +25,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* User Facing Tour Page (Dynamic) */}
+        {/* User Facing Tour Page */}
         <Route path="/tour/:slug" element={<TourPlayer />} />
 
         {/* Admin Interface */}

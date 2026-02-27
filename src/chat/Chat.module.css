@@ -1,0 +1,297 @@
+/* User Chat Interface - Apple HIG Strict */
+
+.appleChatTheme {
+  background-color: #FFFFFF;
+  min-height: 100vh;
+  font-family: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: -0.022em;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  color: #000000;
+}
+
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #ffffff;
+  position: relative;
+  box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+  .layoutWrapper {
+    max-width: 430px;
+    margin: 32px auto;
+    border-radius: 44px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border: 8px solid #1a1a1a;
+    height: calc(100vh - 64px);
+  }
+}
+
+/* Header */
+.chatHeader {
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.progressBarContainer {
+  width: 140px;
+  height: 4px;
+  background-color: #F2F2F7;
+  border-radius: 2px;
+  margin: 12px auto;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: #007AFF;
+  transition: width 0.5s cubic-bezier(0.25, 0.1, 0.25, 1.0);
+}
+
+.scorePill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8E8E93;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.scoreNumber {
+  color: #007AFF;
+}
+
+/* Chat Area */
+.scrollableChat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 160px;
+  /* Space for input */
+}
+
+.kiaraLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8E8E93;
+  margin-left: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.bubbleBase {
+  max-width: 80%;
+  padding: 12px 18px;
+  font-size: 16px;
+  border-radius: 20px;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.bubbleGuide {
+  background-color: #F2F2F7;
+  color: #000;
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+}
+
+.bubbleUser {
+  background-color: #007AFF;
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+}
+
+/* Options */
+.optionsContainer {
+  width: 85%;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionPill {
+  background-color: #ffffff;
+  border: 1px solid #E5E5EA;
+  padding: 14px 18px;
+  border-radius: 14px;
+  color: #007AFF;
+  font-weight: 600;
+  font-size: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.optionPill:active {
+  background-color: #F2F2F7;
+}
+
+/* Media */
+.mediaCard {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+  background-color: #000;
+}
+
+.mediaCard img,
+.mediaCard video {
+  width: 100%;
+  display: block;
+}
+
+.mediaOverlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mediaCaption {
+  padding: 14px 18px;
+  background: #fff;
+  font-size: 14px;
+  color: #48484A;
+  font-weight: 500;
+}
+
+/* Input Bar */
+.bottomBar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 12px 16px 34px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.inputContainer {
+  background: #F2F2F7;
+  border-radius: 22px;
+  padding: 6px 10px 6px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chatInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #000;
+  font-family: inherit;
+  padding: 8px 0;
+}
+
+.sendButton {
+  width: 32px;
+  height: 32px;
+  background-color: #007AFF;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.disclaimer {
+  font-size: 11px;
+  color: #8E8E93;
+  text-align: center;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modalContent {
+  width: 100%;
+  height: 85%;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+  animation: appleSheetUp 0.5s cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.5px solid #F2F2F7;
+}
+
+@keyframes appleSheetUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes appleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeIn {
+  animation: appleFadeIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1.0) forwards;
+}
