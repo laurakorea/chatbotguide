@@ -67,26 +67,36 @@ const VisualEditor = () => {
             }
         }));
 
-        // 2. Create Edges with Logic Colors
+        // 2. Create Edges with Logic Colors (Bundled)
         const tempEdges = [];
         flowData.forEach((item) => {
             if (item.options) {
-                item.options.forEach((opt, idx) => {
+                // Group options by their target
+                const targetGroups = {};
+                item.options.forEach((opt) => {
                     if (opt.target) {
-                        const isCorrect = opt.isCorrect === true;
-                        tempEdges.push({
-                            id: `e-${item.id}-${opt.target}-${idx}`,
-                            source: item.id,
-                            target: opt.target,
-                            label: opt.label || '',
-                            animated: isCorrect,
-                            style: {
-                                stroke: isCorrect ? '#34C759' : '#8E8E93',
-                                strokeWidth: isCorrect ? 3 : 2,
-                                opacity: isCorrect ? 1 : 0.5
-                            }
-                        });
+                        if (!targetGroups[opt.target]) targetGroups[opt.target] = [];
+                        targetGroups[opt.target].push(opt);
                     }
+                });
+
+                // Create one edge per unique target
+                Object.keys(targetGroups).forEach((targetId) => {
+                    const group = targetGroups[targetId];
+                    const hasCorrect = group.some(o => o.isCorrect === true);
+
+                    tempEdges.push({
+                        id: `e-${item.id}-${targetId}`,
+                        source: item.id,
+                        target: targetId,
+                        label: group.length > 1 ? `${group.length} Paths` : (group[0].label || ''),
+                        animated: hasCorrect,
+                        style: {
+                            stroke: hasCorrect ? '#34C759' : '#8E8E93',
+                            strokeWidth: hasCorrect ? 3 : 2,
+                            opacity: hasCorrect ? 1 : 0.6
+                        }
+                    });
                 });
             }
         });

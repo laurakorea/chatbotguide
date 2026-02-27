@@ -158,6 +158,18 @@ const Inspector = ({ selectedNode, onUpdateNode }) => {
                                 </div>
                             )}
                         </div>
+                        {selectedNode.type === 'quiz' && (
+                            <div className="mt-3 bg-white/50 p-2 rounded border border-dashed border-gray-200">
+                                <label className="text-[10px] font-bold text-blue-500 uppercase mb-1 block">Feedback Content</label>
+                                <textarea
+                                    className={styles.textarea}
+                                    rows={2}
+                                    placeholder="선택 후 가이드가 해줄 대답..."
+                                    value={opt.feedback || ''}
+                                    onChange={(e) => updateOption(idx, 'feedback', e.target.value)}
+                                />
+                            </div>
+                        )}
                     </div>
                 ))}
                 <button className={styles.addItemBtn} onClick={addOption}>
@@ -165,28 +177,30 @@ const Inspector = ({ selectedNode, onUpdateNode }) => {
                 </button>
             </div>
 
-            {selectedNode.type === 'chat' && (
-                <div className={styles.inspectorSection}>
-                    <h2 className={styles.sectionTitle}>Location (Map Pin)</h2>
-                    <div className="flex gap-2">
-                        <input
-                            className={styles.input}
-                            placeholder="Lat"
-                            type="number" step="0.000001"
-                            value={data.coords?.lat || ''}
-                            onChange={(e) => updateData({ coords: { ...data.coords, lat: parseFloat(e.target.value) } })}
-                        />
-                        <input
-                            className={styles.input}
-                            placeholder="Lng"
-                            type="number" step="0.000001"
-                            value={data.coords?.lng || ''}
-                            onChange={(e) => updateData({ coords: { ...data.coords, lng: parseFloat(e.target.value) } })}
-                        />
+            {
+                selectedNode.type === 'chat' && (
+                    <div className={styles.inspectorSection}>
+                        <h2 className={styles.sectionTitle}>Location (Map Pin)</h2>
+                        <div className="flex gap-2">
+                            <input
+                                className={styles.input}
+                                placeholder="Lat"
+                                type="number" step="0.000001"
+                                value={data.coords?.lat || ''}
+                                onChange={(e) => updateData({ coords: { ...data.coords, lat: parseFloat(e.target.value) } })}
+                            />
+                            <input
+                                className={styles.input}
+                                placeholder="Lng"
+                                type="number" step="0.000001"
+                                value={data.coords?.lng || ''}
+                                onChange={(e) => updateData({ coords: { ...data.coords, lng: parseFloat(e.target.value) } })}
+                            />
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

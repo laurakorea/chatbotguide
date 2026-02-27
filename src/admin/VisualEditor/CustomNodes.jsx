@@ -26,6 +26,9 @@ export const ChatNode = memo(({ data, selected }) => {
 });
 
 export const QuizNode = memo(({ data, selected }) => {
+    const correctCount = data.options?.filter(o => o.isCorrect).length || 0;
+    const wrongCount = (data.options?.length || 0) - correctCount;
+
     return (
         <div className={`${styles.customNode} ${selected ? styles.selectedNode : ''}`}>
             <Handle type="target" position={Position.Top} className={styles.nodeHandle} />
@@ -38,11 +41,21 @@ export const QuizNode = memo(({ data, selected }) => {
 
             <div className={styles.nodeFooter}>
                 <div className={styles.nodeStats}>
-                    <span className={data.options?.some(o => o.isCorrect) ? 'text-green-600 font-bold' : 'text-orange-500'}>
-                        {data.options?.some(o => o.isCorrect) ? '✅ Answered' : '⚠️ No Answer'}
-                    </span>
+                    <div className="flex gap-2 text-[10px]">
+                        <span className="flex items-center gap-0.5 text-green-600 font-bold">
+                            ✅ {correctCount}
+                        </span>
+                        <span className="flex items-center gap-0.5 text-gray-400">
+                            ❌ {wrongCount}
+                        </span>
+                    </div>
                     <span className={styles.exitBadge}>{data.options?.length || 0} Exits</span>
                 </div>
+                {data.options?.some(o => o.feedback) && (
+                    <div className="mt-2 pt-2 border-t border-gray-50 text-[10px] text-blue-500 italic truncate">
+                        Feedback configured
+                    </div>
+                )}
             </div>
 
             <Handle type="source" position={Position.Bottom} className={styles.nodeHandle} />
