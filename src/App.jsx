@@ -13,7 +13,7 @@ const App = () => {
     if (savedTours.length === 0) {
       const initialTour = {
         id: 'default-tour',
-        title: '로마 콜로세움',
+        title: '로마 콜로세움 챗봇투어',
         slug: 'rome-colosseum',
         jsonData: tourData,
         thumbnail: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',

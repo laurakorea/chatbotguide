@@ -42,23 +42,40 @@ const VisualEditor = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     // JSON to Flow Mapping & Auto-Layout
-    const loadSavedJson = useCallback((flowData) => {
-        if (!flowData || !Array.isArray(flowData)) return;
+    const loadSavedJson = useCallback((data) => {
+        if (!data) return;
+
+        let flowData = [];
+
+        // Handle varied structures: object with .flow or direct array
+        if (Array.isArray(data)) {
+            flowData = data;
+        } else if (data.flow && Array.isArray(data.flow)) {
+            flowData = data.flow;
+        } else if (typeof data === 'string') {
+            try {
+                const parsed = JSON.parse(data);
+                flowData = parsed.flow || (Array.isArray(parsed) ? parsed : []);
+            } catch (e) {
+                console.error("Failed to parse JSON string in loader", e);
+                return;
+            }
+        }
+
+        if (flowData.length === 0) return;
 
         const newNodes = flowData.map((item, index) => {
-            // Auto-Layout: Calculate position if not provided
             const position = item.position || {
-                x: RF_SPACING_X + (index % 4) * 300,
-                y: RF_SPACING_Y + Math.floor(index / 4) * 200
+                x: RF_SPACING_X + (index % 4) * 350,
+                y: RF_SPACING_Y + Math.floor(index / 4) * 250
             };
 
             return {
-                id: item.id,
-                // Type Matching: 'quiz' if specified, otherwise 'chat'
+                id: item.id || `node_${index}`,
                 type: item.type === 'quiz' || item.options?.some(o => o.isCorrect) ? 'quiz' : 'chat',
                 position,
                 data: {
-                    label: item.spotName || item.id,
+                    label: item.spotName || item.id || `Node ${index}`,
                     spotName: item.spotName,
                     contents: item.contents || [],
                     options: item.options || [],
@@ -86,7 +103,7 @@ const VisualEditor = () => {
             }
         });
 
-        setNodes(newNodes.length > 0 ? newNodes : initialNodes);
+        setNodes(newNodes);
         setEdges(newEdges);
     }, []);
 
@@ -99,12 +116,12 @@ const VisualEditor = () => {
 
             // Artificial delay for Apple-style smooth entry
             const timer = setTimeout(() => {
-                if (tour) {
+                if (tour && tour.jsonData) {
                     setTourTitle(tour.title);
-                    loadSavedJson(tour.jsonData?.flow);
+                    loadSavedJson(tour.jsonData);
                 }
                 setIsLoading(false);
-            }, 800);
+            }, 500);
 
             return () => clearTimeout(timer);
         }
