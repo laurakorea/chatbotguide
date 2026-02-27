@@ -35,7 +35,7 @@ const initialNodes = [
 const VisualEditor = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [nodes, setNodes] = useState(initialNodes);
+    const [nodes, setNodes] = useState([]);
     const [edges, setEdges] = useState([]);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [tourTitle, setTourTitle] = useState("New Tour Project");
@@ -124,6 +124,10 @@ const VisualEditor = () => {
             }, 500);
 
             return () => clearTimeout(timer);
+        } else {
+            // New tour starts with one intro node
+            setNodes(initialNodes);
+            setEdges([]);
         }
     }, [id, loadSavedJson]);
 
