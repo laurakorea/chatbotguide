@@ -1,0 +1,466 @@
+{
+  "flow": [
+    {
+      "id": "intro",
+      "spotName": "투어 시작",
+      "contents": [
+        {
+          "type": "image",
+          "value": "https://static.tourlive.co.kr/static/tour/2020/05/13/guide_thumb/a052ba389fb111ea8adb02420a000099/image/guide_yoonjung.jpg",
+          "caption": "키아라가이드"
+        },
+        {
+          "type": "text",
+          "value": "본 조르노! 역사와 예술을 쉽고 재미있게 전해드리는 이탈리아 국가 공인 가이드 키아라입니다."
+        },
+        {
+          "type": "text",
+          "value": "저는 10년 동안 로마와 베네치아에 살며 현지 가이드로 활동했고, 지금은 지식 여행 크리에이터로 활동하고 있어요."
+        },
+        {
+          "type": "image",
+          "value": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1000&auto=format&fit=crop",
+          "caption": "로마의 상징, 콜로세움 전경"
+        },
+        {
+          "type": "text",
+          "value": "우리의 여행은 2000년의 시간을 뛰어넘어 세계 최고의 경기장인 콜로세움에서 시작합니다."
+        }
+      ],
+      "options": [
+        {
+          "label": "🏟️ 투어 시작하기 전에 퀴즈 하나!",
+          "target": "quiz_colosseum_year"
+        },
+        {
+          "label": "🏃 바로 입장 정보 확인",
+          "target": "info_ticket"
+        }
+      ],
+      "coords": {
+        "lat": 41.8902,
+        "lng": 12.4922
+      }
+    },
+    {
+      "id": "quiz_colosseum_year",
+      "type": "quiz",
+      "contents": [
+        {
+          "type": "text",
+          "value": "자, 깜짝 퀴즈입니다! 이 거대한 콜로세움을 짓는 데 과연 몇 년이나 걸렸을까요? 🏗️"
+        }
+      ],
+      "options": [
+        {
+          "label": "1️⃣ 단 8년",
+          "target": "quiz_1_correct",
+          "isCorrect": true
+        },
+        {
+          "label": "2️⃣ 약 30년",
+          "target": "quiz_1_wrong"
+        },
+        {
+          "label": "3️⃣ 약 80년",
+          "target": "quiz_1_wrong"
+        }
+      ]
+    },
+    {
+      "id": "quiz_1_correct",
+      "contents": [
+        {
+          "type": "text",
+          "value": "딩동댕! 정답입니다! 🎉 정답은 단 8년(기원후 72~80년)이에요. 8만 명 수용 시설을 8년 만에 지었다니 로마의 건축술, 정말 대단하죠? 기분 좋게 시작해볼까요?"
+        }
+      ],
+      "options": [
+        {
+          "label": "🎫 통합권 정보 확인하기",
+          "target": "info_ticket"
+        }
+      ]
+    },
+    {
+      "id": "quiz_1_wrong",
+      "contents": [
+        {
+          "type": "text",
+          "value": "아쉽습니다! 정답은 '단 8년'이었어요. 😊 로마인들은 엄청난 기술력으로 이 거대한 경기장을 아주 빠르게 완공했답니다. 이제 본격적인 정보를 알아볼까요?"
+        }
+      ],
+      "options": [
+        {
+          "label": "🎫 통합권 정보 확인하기",
+          "target": "info_ticket"
+        }
+      ]
+    },
+    {
+      "id": "info_ticket",
+      "spotName": "콜로세움 통합권 안내",
+      "contents": [
+        {
+          "type": "text",
+          "value": "콜로세움 통합권은 콜로세움, 포로 로마노, 팔라티노 언덕 세 군데를 24시간 안에 둘러볼 수 있는 아주 유용한 티켓이에요."
+        }
+      ],
+      "options": [
+        {
+          "label": "⏰ 입장 시간 주의사항 (필독)",
+          "target": "info_entry_time"
+        },
+        {
+          "label": "🏃 투어시작하기",
+          "target": "move_entrance"
+        }
+      ],
+      "coords": {
+        "lat": 41.89021,
+        "lng": 12.49225
+      }
+    },
+    {
+      "id": "info_entry_time",
+      "spotName": "입장 시간 주의사항",
+      "contents": [
+        {
+          "type": "text",
+          "value": "이 부분 정말 중요해요! 콜로세움은 표에 지정된 시간에만 입장이 가능합니다. 1분이라도 늦으면 입장이 거부될 수 있어요."
+        }
+      ],
+      "options": [
+        {
+          "label": "🗺️ 추천 루트 확인",
+          "target": "info_route"
+        },
+        {
+          "label": "🏟️ 이제 진짜 입장할래요",
+          "target": "move_entrance"
+        }
+      ]
+    },
+    {
+      "id": "info_route",
+      "spotName": "추천 관람 루트",
+      "contents": [
+        {
+          "type": "text",
+          "value": "추천 루트는 1층에서 시작해 2층 전망대, 그리고 마지막에 지하 공간을 내려다보는 순서가 최고랍니다!"
+        }
+      ],
+      "options": [
+        {
+          "label": "🏟️ 콜로세움 입장하기",
+          "target": "move_entrance"
+        }
+      ],
+      "coords": {
+        "lat": 41.89022,
+        "lng": 12.4923
+      }
+    },
+    {
+      "id": "move_entrance",
+      "spotName": "콜로세움 입구 이동",
+      "contents": [
+        {
+          "type": "video",
+          "value": "https://static.tourlive.co.kr/static/tour/2025/05/30/631/zsmJC00R09TwUXvdYpS36abLuPuyaKcTn2yDjyocTXLHjfy0tL/source/8c661d5a3cf811f0beeabe7a2cd47121/video/1748569865_FDww6.mp4",
+          "caption": "입구까지 이동하는 경로 안내"
+        },
+        {
+          "type": "text",
+          "value": "신분 확인을 위해 여권도 꼭 준비해 주세요! 아래 영상을 소리와 함께 확인하며 입구까지 천천히 걸어와 주세요. 🔊"
+        }
+      ],
+      "options": [
+        {
+          "label": "✅ 십자가 앞에 도착했어요",
+          "target": "spot_1_main"
+        }
+      ],
+      "coords": {
+        "lat": 41.8901,
+        "lng": 12.4925
+      }
+    },
+    {
+      "id": "spot_1_main",
+      "spotName": "1번 스팟: 십자가 앞",
+      "contents": [
+        {
+          "type": "text",
+          "value": "고대 로마의 열기가 느껴지시나요? 정면에 보이는 거대한 십자가, 궁금하지 않으신가요?"
+        }
+      ],
+      "options": [
+        {
+          "label": "✝️ 십자가의 비밀 (순교지?)",
+          "target": "spot_1_cross"
+        },
+        {
+          "label": "🕳️ 바닥이 뚫린 지하 공간",
+          "target": "spot_1_underground"
+        }
+      ],
+      "coords": {
+        "lat": 41.8901,
+        "lng": 12.4925
+      }
+    },
+    {
+      "id": "spot_1_cross",
+      "spotName": "십자가와 네로 황제",
+      "contents": [
+        {
+          "type": "text",
+          "value": "이 자리는 원래 네로 황제의 인공 호수터였어요. 베스파시아누스 황제가 이를 메우고 경기장을 지었죠."
+        }
+      ],
+      "options": [
+        {
+          "label": "❓ 여기서 퀴즈! 황제의 별명은?",
+          "target": "quiz_vespasianus"
+        },
+        {
+          "label": "🏃 계속 이동하기",
+          "target": "move_to_spot_2"
+        }
+      ]
+    },
+    {
+      "id": "quiz_vespasianus",
+      "type": "quiz",
+      "contents": [
+        {
+          "type": "text",
+          "value": "방금 말씀드린, 폭군 네로의 호수를 메우고 콜로세움을 짓기 시작한 황제의 별명은 무엇일까요? 🚽"
+        }
+      ],
+      "options": [
+        {
+          "label": "1️⃣ 짭새",
+          "target": "quiz_2_wrong"
+        },
+        {
+          "label": "2️⃣ 오줌새",
+          "target": "quiz_2_correct",
+          "isCorrect": true
+        },
+        {
+          "label": "3️⃣ 여미새",
+          "target": "quiz_2_wrong"
+        }
+      ]
+    },
+    {
+      "id": "quiz_2_correct",
+      "contents": [
+        {
+          "type": "text",
+          "value": "정답! 오줌새입니다 👍 '돈에서는 냄새가 나지 않는다'는 명언을 남기며 로마의 재정을 튼튼히 하고 이 멋진 경기장까지 지었답니다."
+        }
+      ],
+      "options": [
+        {
+          "label": "🏃 2번 스팟으로 이동",
+          "target": "move_to_spot_2"
+        }
+      ]
+    },
+    {
+      "id": "quiz_2_wrong",
+      "contents": [
+        {
+          "type": "text",
+          "value": "아쉽네요! 정답은 오줌새입니다. 당시 로마에서는 오줌을 수거해 세탁업자들에게 팔았습니다. 오줌 속의 암모니아 성분이 옷의 기름기를 빼는 데 아주 탁월했기 때문이죠. 실용주의자였던 베스파시아누스 황제는 공중화장실을 유료로 운영하며, 세탁업자들이 오줌을 사갈 때 세금을 내게 했습니다. 돈에서는 냄새가 나지 않는다. 아들이 아버지, 오줌에 세금을 매기는 건 너무 심한 것 아닙니까?라고 묻자, 황제는 아들의 코에 금화를 들이대며 봐라, 오줌세로 번 돈이지만 냄새가 나지 않는다 라고 대답한 일화로 아주 유명합니다."
+        }
+      ],
+      "options": [
+        {
+          "label": "🏃 2번 스팟으로 이동",
+          "target": "move_to_spot_2"
+        }
+      ]
+    },
+    {
+      "id": "move_to_spot_2",
+      "spotName": "2번 스팟 이동",
+      "contents": [
+        {
+          "type": "video",
+          "value": "https://assets.mixkit.co.kr/videos/preview/mixkit-inside-the-colosseum-of-rome-4288-large.mp4",
+          "caption": "계단 위 전망대로 올라가는 길"
+        },
+        {
+          "type": "text",
+          "value": "계단 올라가기 전, 아래 이동 안내 영상을 소리와 함께 꼭 체크해 주세요! 로마의 숨은 흔적을 찾는 팁이 담겨 있답니다. 🔊"
+        }
+      ],
+      "options": [
+        {
+          "label": "✅ 도착했어요",
+          "target": "spot_2_main"
+        }
+      ],
+      "coords": {
+        "lat": 41.8903,
+        "lng": 12.4923
+      }
+    },
+    {
+      "id": "spot_2_main",
+      "spotName": "2번 스팟: 채석장 흔적",
+      "contents": [
+        {
+          "type": "text",
+          "value": "중세 사람들이 대리석을 뜯어가 '채석장'처럼 쓰기도 했지만, 여전히 건재한 로마의 기술!"
+        }
+      ],
+      "options": [
+        {
+          "label": "❓ 마지막 퀴즈! '아레나'의 뜻은?",
+          "target": "quiz_arena_meaning"
+        }
+      ],
+      "coords": {
+        "lat": 41.8903,
+        "lng": 12.4923
+      }
+    },
+    {
+      "id": "quiz_arena_meaning",
+      "type": "quiz",
+      "contents": [
+        {
+          "type": "text",
+          "value": "콜로세움의 경기장 바닥을 뜻하며, 오늘날 모든 경기장을 부르는 이름이 된 '아레나(Arena)'! 이 단어의 원래 라틴어 뜻은 무엇일까요? 🏖️"
+        }
+      ],
+      "options": [
+        {
+          "label": "1️⃣ 피(Blood)",
+          "target": "quiz_3_wrong"
+        },
+        {
+          "label": "2️⃣ 모래(Sand)",
+          "target": "quiz_3_correct",
+          "isCorrect": true
+        },
+        {
+          "label": "3️⃣ 승리(Victory)",
+          "target": "quiz_3_wrong"
+        }
+      ]
+    },
+    {
+      "id": "quiz_3_correct",
+      "contents": [
+        {
+          "type": "text",
+          "value": "천재시군요! 정답은 '모래'입니다. 검투사의 피를 흡수하기 위해 바닥에 모래를 깔았던 것에서 유래했죠. 퀴즈를 모두 마쳤네요! 결과가 궁금하시죠?"
+        }
+      ],
+      "options": [
+        {
+          "label": "📈 최종 점수 확인하고 3번 스팟 가기",
+          "target": "move_to_spot_3"
+        }
+      ]
+    },
+    {
+      "id": "quiz_3_wrong",
+      "contents": [
+        {
+          "type": "text",
+          "value": "아깝습니다! 정답은 '모래'였어요. 검투사의 피를 흡수하기 위해 모래를 뿌렸던 역사가 담겨 있죠. 자, 이제 투어의 하이라이트인 전망대로 가볼까요?"
+        }
+      ],
+      "options": [
+        {
+          "label": "🏃 3번 스팟으로 이동",
+          "target": "move_to_spot_3"
+        }
+      ]
+    },
+    {
+      "id": "move_to_spot_3",
+      "spotName": "3번 스팟 이동",
+      "contents": [
+        {
+          "type": "text",
+          "value": "계단을 따라 2층 끝까지 쭉 올라오시면 콜로세움 내부가 가장 멋지게 보이는 전망대에 도착합니다!"
+        }
+      ],
+      "options": [
+        {
+          "label": "✅ 2층 전망대 도착!",
+          "target": "spot_3_main"
+        }
+      ],
+      "coords": {
+        "lat": 41.8905,
+        "lng": 12.4921
+      }
+    },
+    {
+      "id": "spot_3_main",
+      "spotName": "3번 스팟: 2층 하이라이트",
+      "contents": [
+        {
+          "type": "image",
+          "value": "https://images.unsplash.com/photo-1515542641795-85edea8ef25a?q=80&w=1000&auto=format&fit=crop",
+          "caption": "2층 전망대에서 바라본 콜로세움 뷰"
+        },
+        {
+          "type": "text",
+          "value": "환상적인 뷰죠? 신분에 따라 앉는 자리가 달랐던 로마 사회의 축소판을 감상해보세요."
+        }
+      ],
+      "options": [
+        {
+          "label": "🎪 2000년 전 돔 구장(천막)",
+          "target": "spot_3_dome"
+        },
+        {
+          "label": "🏃 투어 마무리하기",
+          "target": "ending"
+        }
+      ],
+      "coords": {
+        "lat": 41.8905,
+        "lng": 12.4921
+      }
+    },
+    {
+      "id": "ending",
+      "spotName": "투어 마무리",
+      "contents": [
+        {
+          "type": "text",
+          "value": "콜로세움 투어 즐거우셨나요? 퀴즈도 풀며 함께해주셔서 정말 감사합니다!"
+        },
+        {
+          "type": "text",
+          "value": "안전하고 즐거운 로마 여행 되시길 바라며, 가이드 키아라였습니다. 또 만나요!"
+        }
+      ],
+      "options": [
+        {
+          "label": "📍 인생샷 명당 좌표 받기",
+          "target": "photo_links"
+        },
+        {
+          "label": "🏁 투어 종료",
+          "target": "end"
+        }
+      ],
+      "coords": {
+        "lat": 41.8902,
+        "lng": 12.4922
+      }
+    }
+  ]
+}

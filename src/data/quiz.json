@@ -1,0 +1,29 @@
+{
+    "quizzes": {
+        "colosseum_depth_1": {
+            "question": "콜로세움은 한 번에 최대 몇 명의 관중을 수용할 수 있었을까요?",
+            "options": [
+                {
+                    "label": "약 1만 명",
+                    "isCorrect": false
+                },
+                {
+                    "label": "약 3만 명",
+                    "isCorrect": false
+                },
+                {
+                    "label": "약 5만 명",
+                    "isCorrect": true
+                },
+                {
+                    "label": "약 10만 명",
+                    "isCorrect": false
+                }
+            ],
+            "feedback": {
+                "correct": "정답입니다! 5만 명이나 되는 관중이 동시에 입장하고 퇴장할 수 있도록 설계된 고대 로마의 공학 기술은 정말 놀랍죠?",
+                "incorrect": "아쉽네요! 정답은 '약 5만 명'입니다. 당시 로마 인구가 100만 명 정도였으니 엄청난 규모였죠."
+            }
+        }
+    }
+}
