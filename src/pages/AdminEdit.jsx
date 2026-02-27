@@ -38,7 +38,6 @@ const AdminEdit = () => {
         const reader = new FileReader();
         reader.onload = (event) => {
             try {
-                // Validate JSON
                 JSON.parse(event.target.result);
                 setFormData(prev => ({ ...prev, jsonData: event.target.result }));
                 setError('');
@@ -58,8 +57,6 @@ const AdminEdit = () => {
         }
 
         const savedTours = JSON.parse(localStorage.getItem('tours') || '[]');
-
-        // Slug Duplicate Check (except when editing the same tour)
         const duplicate = savedTours.find(t => t.slug === formData.slug && t.id !== id);
         if (duplicate) {
             setError('이미 사용 중인 Slug입니다.');
@@ -92,94 +89,99 @@ const AdminEdit = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6 font-sans">
-            <div className="max-w-3xl mx-auto">
-                <header className="flex items-center gap-4 mb-8">
+        <div className="min-h-screen bg-white p-4 md:p-10 font-sans text-gray-900">
+            <div className="max-w-4xl mx-auto">
+                <header className="flex items-center gap-6 mb-12 border-b pb-8">
                     <button
                         onClick={() => navigate('/admin/tours')}
-                        className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
+                        className="p-3 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all border border-gray-100"
                     >
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={22} className="text-black" />
                     </button>
-                    <h1 className="text-2xl font-bold text-gray-800">
-                        {isEdit ? '투어 수정' : '새 투어 추가'}
-                    </h1>
+                    <div>
+                        <h1 className="text-3xl font-extrabold tracking-tight text-black">
+                            {isEdit ? '투어 콘텐츠 수정' : '새로운 투어 생성'}
+                        </h1>
+                        <p className="text-gray-500 mt-1">투어 정보와 시나리오 데이터를 설정하세요.</p>
+                    </div>
                 </header>
 
-                <form onSubmit={handleSave} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
+                <form onSubmit={handleSave} className="space-y-10">
                     {error && (
-                        <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100">
+                        <div className="bg-red-50 text-red-600 p-5 rounded-2xl text-sm font-bold border border-red-100 animate-shake">
                             {error}
                         </div>
                     )}
 
-                    <div className="space-y-2">
-                        <label className="block text-sm font-bold text-gray-700">투어 제목 *</label>
-                        <input
-                            type="text"
-                            placeholder="예: 콜로세움 역사 투어"
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                            value={formData.title}
-                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="block text-sm font-bold text-gray-700">Slug (URL 식별자) *</label>
-                        <div className="flex items-center gap-2">
-                            <span className="text-gray-400 font-medium">domain.com/tour/</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="space-y-2">
+                            <label className="block text-sm font-bold text-black uppercase tracking-wider">투어 이름 *</label>
                             <input
                                 type="text"
-                                placeholder="rome-colosseum"
-                                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-mono text-sm"
-                                value={formData.slug}
-                                onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                                placeholder="예: 콜로세움 역사 투어"
+                                className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all font-medium"
+                                value={formData.title}
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-bold text-black uppercase tracking-wider"> Slug *</label>
+                            <div className="flex items-center gap-1">
+                                <span className="text-gray-400 font-medium px-2">/tour/</span>
+                                <input
+                                    type="text"
+                                    placeholder="rome-colosseum"
+                                    className="flex-1 px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all font-mono text-sm"
+                                    value={formData.slug}
+                                    onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="block text-sm font-bold text-gray-700">JSON 데이터 설정 *</label>
-                        <div className="flex items-center gap-4 mb-2">
-                            <label className="cursor-pointer bg-gray-100 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-gray-200 transition-colors">
-                                <Upload size={16} /> 파일 업로드 (.json)
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <label className="block text-sm font-bold text-black uppercase tracking-wider">시나리오 JSON 데이터 *</label>
+                            <label className="cursor-pointer bg-black text-white px-5 py-2.5 rounded-full text-xs font-bold flex items-center gap-2 hover:bg-gray-800 transition-all shadow-md">
+                                <Upload size={14} /> JSON 업로드
                                 <input type="file" accept=".json" className="hidden" onChange={handleJsonUpload} />
                             </label>
                         </div>
                         <textarea
-                            rows="10"
-                            placeholder="JSON 데이터를 직접 붙여넣거나 파일을 업로드하세요."
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-mono text-xs leading-relaxed"
+                            rows="12"
+                            placeholder="JSON 데이터를 직접 입력하거나 위 버튼을 통해 파일을 업로드하세요."
+                            className="w-full px-6 py-5 rounded-3xl border border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all font-mono text-xs leading-relaxed"
                             value={formData.jsonData}
                             onChange={(e) => setFormData({ ...formData, jsonData: e.target.value })}
                         ></textarea>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-bold text-gray-700">썸네일 이미지 URL</label>
+                        <label className="block text-sm font-bold text-black uppercase tracking-wider">썸네일 이미지 URL</label>
                         <input
                             type="text"
-                            placeholder="https://example.com/image.jpg"
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            placeholder="https://images.unsplash.com/..."
+                            className="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all font-medium"
                             value={formData.thumbnail}
                             onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
                         />
                     </div>
 
-                    <div className="flex gap-4 pt-4">
+                    <div className="flex flex-col md:flex-row gap-4 pt-6">
                         <button
                             type="submit"
-                            className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-md active:scale-[0.98]"
+                            className="flex-1 bg-black text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-800 transition-all shadow-xl active:scale-[0.98] text-lg uppercase"
                         >
-                            <Save size={20} /> 저장하기
+                            <Save size={22} /> {isEdit ? '수정 사항 저장' : '투어 등록 완료'}
                         </button>
                         {formData.slug && (
                             <button
                                 type="button"
                                 onClick={() => window.open(`/tour/${formData.slug}`, '_blank')}
-                                className="px-6 border border-gray-200 bg-white text-gray-600 font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-all"
+                                className="px-8 border border-black bg-white text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-all"
                             >
-                                <Eye size={20} /> 미리보기
+                                <Eye size={22} /> 라이브 미리보기
                             </button>
                         )}
                     </div>
