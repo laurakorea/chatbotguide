@@ -2,7 +2,9 @@
 
 .editorPage {
     background-color: #F2F2F7;
-    min-height: 100vh;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
     color: #1C1C1E;
     /* macOS background */
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;

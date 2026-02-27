@@ -42,3 +42,4 @@ export const QuizNode = memo(({ data, selected }) => {
         </div>
     );
 });
+export const SpotNode = ChatNode;

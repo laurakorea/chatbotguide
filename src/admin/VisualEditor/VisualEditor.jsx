@@ -11,7 +11,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Plus, Download, Upload, Play, MessageCircle, HelpCircle, Save } from 'lucide-react';
-import { ChatNode, QuizNode } from './CustomNodes';
+import { ChatNode, QuizNode, SpotNode } from './CustomNodes';
 import Inspector from './Inspector';
 import styles from './VisualEditor.module.css';
 
@@ -20,7 +20,8 @@ const RF_SPACING_Y = 150;
 
 const nodeTypes = {
     chat: ChatNode,
-    quiz: QuizNode
+    quiz: QuizNode,
+    spot: SpotNode
 };
 
 const initialNodes = [
