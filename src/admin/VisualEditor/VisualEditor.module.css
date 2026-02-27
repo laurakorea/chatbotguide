@@ -379,6 +379,8 @@
 }
 
 .selectedEdge {
-    stroke-width: 4px !important;
-    filter: drop-shadow(0 0 4px rgba(0, 122, 255, 0.3));
+    stroke: #007AFF !important;
+    stroke-width: 5px !important;
+    filter: drop-shadow(0 0 6px rgba(0, 113, 227, 0.4));
+    transition: all 0.2s;
 }

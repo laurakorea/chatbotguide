@@ -68,11 +68,11 @@ export const LogicEdge = ({
 export const ChatNode = memo(({ data, selected }) => {
     return (
         <div className={`${styles.customNode} ${selected ? styles.selectedNode : ''}`}>
-            {/* Multi-directional Handles for Layout Agnosticism */}
-            <Handle type="target" position={Position.Left} id="target-left" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
+            {/* Multi-directional Handles - Vertical Optimized */}
+            <Handle type="target" position={Position.Bottom} id="target-bottom" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
             <Handle type="target" position={Position.Top} id="target-top" className={styles.nodeHandle} />
+            <Handle type="target" position={Position.Left} id="target-left" className={styles.nodeHandle} />
             <Handle type="target" position={Position.Right} id="target-right" className={styles.nodeHandle} />
-            <Handle type="target" position={Position.Bottom} id="target-bottom" className={styles.nodeHandle} />
 
             <div className={`${styles.nodeHeader} ${styles.chatHeader}`}>
                 <MessageCircle size={14} /> CHAT
@@ -86,10 +86,10 @@ export const ChatNode = memo(({ data, selected }) => {
                 </div>
             </div>
 
-            <Handle type="source" position={Position.Right} id="source-right" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
+            <Handle type="source" position={Position.Top} id="source-top" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
             <Handle type="source" position={Position.Bottom} id="source-bottom" className={styles.nodeHandle} />
             <Handle type="source" position={Position.Left} id="source-left" className={styles.nodeHandle} />
-            <Handle type="source" position={Position.Top} id="source-top" className={styles.nodeHandle} />
+            <Handle type="source" position={Position.Right} id="source-right" className={styles.nodeHandle} />
         </div>
     );
 });
@@ -100,10 +100,10 @@ export const QuizNode = memo(({ data, selected }) => {
 
     return (
         <div className={`${styles.customNode} ${selected ? styles.selectedNode : ''}`}>
-            <Handle type="target" position={Position.Left} id="target-left" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
+            <Handle type="target" position={Position.Bottom} id="target-bottom" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
             <Handle type="target" position={Position.Top} id="target-top" className={styles.nodeHandle} />
+            <Handle type="target" position={Position.Left} id="target-left" className={styles.nodeHandle} />
             <Handle type="target" position={Position.Right} id="target-right" className={styles.nodeHandle} />
-            <Handle type="target" position={Position.Bottom} id="target-bottom" className={styles.nodeHandle} />
 
             <div className={`${styles.nodeHeader} ${styles.quizHeader}`}>
                 <div className="w-4 h-4 rounded-full bg-[#5856D6] text-white flex items-center justify-center text-[10px] font-black">Q</div>
@@ -130,10 +130,10 @@ export const QuizNode = memo(({ data, selected }) => {
                 )}
             </div>
 
-            <Handle type="source" position={Position.Right} id="source-right" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
+            <Handle type="source" position={Position.Top} id="source-top" className={`${styles.nodeHandle} ${styles.primaryHandle}`} />
             <Handle type="source" position={Position.Bottom} id="source-bottom" className={styles.nodeHandle} />
             <Handle type="source" position={Position.Left} id="source-left" className={styles.nodeHandle} />
-            <Handle type="source" position={Position.Top} id="source-top" className={styles.nodeHandle} />
+            <Handle type="source" position={Position.Right} id="source-right" className={styles.nodeHandle} />
         </div>
     );
 });

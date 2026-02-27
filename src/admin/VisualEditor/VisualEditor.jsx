@@ -125,12 +125,12 @@ const InnerVisualEditor = () => {
                         id: `e-${item.id}-${targetId}`,
                         source: item.id,
                         target: targetId,
-                        sourceHandle: 'source-right',
-                        targetHandle: 'target-left',
+                        sourceHandle: 'source-top',    // Exit from Top
+                        targetHandle: 'target-bottom', // Enter from Bottom
                         type: 'logic',
                         label: group.length > 1 ? `${group.length} Paths` : (group[0].label || ''),
                         animated: hasCorrect,
-                        interactionWidth: 25, // 🚀 Wider interaction area
+                        interactionWidth: 30, // 🚀 Even wider area
                         style: {
                             stroke: hasCorrect ? '#34C759' : '#8E8E93',
                             strokeWidth: hasCorrect ? 3 : 2,
@@ -188,8 +188,8 @@ const InnerVisualEditor = () => {
             return {
                 ...node,
                 position: {
-                    x: 450 * nodeLevel, // Use level for horizontal progression
-                    y: 250 * nodeIndex  // Use index within level for vertical spacing
+                    x: 350 * nodeIndex,
+                    y: 1000 - (300 * nodeLevel) // 🚀 Bottom-to-Top: levels move UP (decreasing Y)
                 }
             };
         });
@@ -251,11 +251,11 @@ const InnerVisualEditor = () => {
                 const newEdge = {
                     ...params,
                     id: `e-${params.source}-${params.target}`,
-                    sourceHandle: params.sourceHandle || 'source-right',
-                    targetHandle: params.targetHandle || 'target-left',
+                    sourceHandle: params.sourceHandle || 'source-top',
+                    targetHandle: params.targetHandle || 'target-bottom',
                     type: 'logic',
                     animated: isCorrect,
-                    interactionWidth: 25, // 🚀 Wider interaction area
+                    interactionWidth: 30,
                     style: {
                         stroke: isCorrect ? '#34C759' : '#8E8E93',
                         strokeWidth: isCorrect ? 3 : 2,
