@@ -28,12 +28,20 @@ const AdminList = () => {
                         <h1 className={styles.adminTitle}>투어 관리</h1>
                         <p className={styles.adminSubtitle}>인터랙티브 가이드 프로그램을 관리하고 배포합니다.</p>
                     </div>
-                    <button
-                        onClick={() => navigate('/admin/tours/new')}
-                        className={styles.btnPrimary}
-                    >
-                        <Plus size={18} /> 새 투어 생성
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => navigate('/admin/tours/builder/new')}
+                            className={styles.btnSecondary}
+                        >
+                            <Plus size={18} /> 시각적 빌더
+                        </button>
+                        <button
+                            onClick={() => navigate('/admin/tours/new')}
+                            className={styles.btnPrimary}
+                        >
+                            <Plus size={18} /> 새 투어 생성
+                        </button>
+                    </div>
                 </header>
 
                 <div className={styles.cardGrid}>
@@ -73,13 +81,22 @@ const AdminList = () => {
                                         </button>
                                     </div>
 
-                                    <Link
-                                        to={`/tour/${tour.slug}`}
-                                        target="_blank"
-                                        className={styles.btnSecondary}
-                                    >
-                                        Live <ExternalLink size={12} className="inline ml-1" />
-                                    </Link>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => navigate(`/admin/tours/builder/${tour.id}`)}
+                                            className={styles.btnSecondary}
+                                            style={{ fontSize: '12px', padding: '6px 10px' }}
+                                        >
+                                            빌더
+                                        </button>
+                                        <Link
+                                            to={`/tour/${tour.slug}`}
+                                            target="_blank"
+                                            className={styles.btnSecondary}
+                                        >
+                                            Live <ExternalLink size={12} className="inline ml-1" />
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         ))
