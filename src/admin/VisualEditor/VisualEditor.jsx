@@ -125,11 +125,12 @@ const InnerVisualEditor = () => {
                         id: `e-${item.id}-${targetId}`,
                         source: item.id,
                         target: targetId,
-                        sourceHandle: 'source-right', // Force Right exit
-                        targetHandle: 'target-left',   // Force Left entry
+                        sourceHandle: 'source-right',
+                        targetHandle: 'target-left',
                         type: 'logic',
                         label: group.length > 1 ? `${group.length} Paths` : (group[0].label || ''),
                         animated: hasCorrect,
+                        interactionWidth: 25, // 🚀 Wider interaction area
                         style: {
                             stroke: hasCorrect ? '#34C759' : '#8E8E93',
                             strokeWidth: hasCorrect ? 3 : 2,
@@ -254,6 +255,7 @@ const InnerVisualEditor = () => {
                     targetHandle: params.targetHandle || 'target-left',
                     type: 'logic',
                     animated: isCorrect,
+                    interactionWidth: 25, // 🚀 Wider interaction area
                     style: {
                         stroke: isCorrect ? '#34C759' : '#8E8E93',
                         strokeWidth: isCorrect ? 3 : 2,
@@ -299,15 +301,30 @@ const InnerVisualEditor = () => {
             setNodes((nds) => nds.map(node => {
                 if (node.id === edge.source) {
                     const updatedOptions = (node.data.options || []).map(opt => {
-                        // If this option pointed to the deleted target, clear it
                         if (opt.target === edge.target) {
-                            return { ...opt, target: null };
+                            return { ...opt, target: "" }; // 🚀 Set to empty string for data consistency
                         }
                         return opt;
                     });
                     return { ...node, data: { ...node.data, options: updatedOptions } };
                 }
                 return node;
+            }));
+        });
+        setTimeout(() => fitView({ duration: 400 }), 100);
+    }, [fitView]);
+
+    // 🚀 Handle Node Deletion (Cleanup References)
+    const onNodesDelete = useCallback((deletedNodes) => {
+        deletedNodes.forEach(deletedNode => {
+            setNodes((nds) => nds.map(node => {
+                const updatedOptions = (node.data.options || []).map(opt => {
+                    if (opt.target === deletedNode.id) {
+                        return { ...opt, target: "" }; // 🚀 Target node no longer exists
+                    }
+                    return opt;
+                });
+                return { ...node, data: { ...node.data, options: updatedOptions } };
             }));
         });
         setTimeout(() => fitView({ duration: 400 }), 100);
@@ -459,6 +476,7 @@ const InnerVisualEditor = () => {
                         onConnect={onConnect}
                         onEdgeUpdate={onEdgeUpdate}
                         onEdgesDelete={onEdgesDelete}
+                        onNodesDelete={onNodesDelete}
                         onNodeClick={onNodeClick}
                         onPaneClick={onPaneClick}
                         nodeTypes={nodeTypes}

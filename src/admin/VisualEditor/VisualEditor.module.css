@@ -177,6 +177,18 @@
     height: 6px !important;
     background-color: #C7C7CC !important;
     border: 2px solid #FFFFFF !important;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.primaryHandle {
+    background-color: #007AFF !important;
+    width: 8px !important;
+    height: 8px !important;
+}
+
+.nodeHandle:hover {
+    transform: scale(1.5);
+    background-color: #007AFF !important;
 }
 
 .nodeFooter {
