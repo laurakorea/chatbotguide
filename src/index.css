@@ -27,47 +27,14 @@ body,
 }
 
 /* 전체 레이아웃 설정 */
+/* 전체 레이아웃 설정 */
 .layout-wrapper {
-  display: grid;
-  grid-template-rows: auto 3.5fr 6.5fr;
-  /* 헤더(auto) + 지도(3.5) + 콘텐츠(6.5) */
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100vh;
   overflow: hidden;
   background-color: var(--kakao-bg);
-}
-
-/* 지도 영역 */
-.map-pane {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 5;
-  background-color: #e5e3df;
-}
-
-/* 콘텐츠 영역 (바텀 시트 느낌) */
-.chat-pane {
-  background-color: var(--kakao-bg);
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
-  overflow: hidden;
-  margin-top: -20px;
-  /* 지도를 살짝 덮는 디자인 */
-  position: relative;
-  z-index: 10;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Updated main-container to fill the pane */
-.main-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  position: relative;
 }
 
 @media (min-width: 769px) {
@@ -77,6 +44,89 @@ body,
     border-left: 1px solid rgba(0, 0, 0, 0.1);
     border-right: 1px solid rgba(0, 0, 0, 0.1);
   }
+}
+
+/* 채팅 영역 - 이제 화면 전체를 차지함 */
+.chat-pane {
+  flex: 1;
+  background-color: var(--kakao-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* 지도 모달 스타일 */
+.map-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  /* 아래에서 올라오는 느낌 */
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.map-modal-content {
+  width: 100%;
+  height: 80%;
+  /* 80% Height */
+  background-color: white;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  max-width: 500px;
+  /* PC 대응 */
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.map-modal-header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.close-modal-btn {
+  padding: 6px 16px;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+}
+
+.map-modal-body {
+  flex: 1;
+  position: relative;
 }
 
 /* Chat Layout */

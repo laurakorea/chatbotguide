@@ -80,11 +80,18 @@ const App = () => {
     }
   }, [messageHistory, isTyping]);
 
+  const [isMapOpen, setIsMapOpen] = useState(false);
+
+  const progressPercent = ((tourData.flow.findIndex(n => n.id === currentNodeId) + 1) / tourData.flow.length) * 100;
+
   const allSpots = tourData.flow.filter(node => node.coords && node.spotName);
 
   const startTourAt = async (spotId) => {
     const node = tourData.flow.find(n => n.id === spotId);
     if (!node) return;
+
+    // Close the map modal when starting a tour
+    setIsMapOpen(false);
 
     // Add a greeting from Kiara when jumping from map
     setMessageHistory(prev => [...prev, {
@@ -96,8 +103,6 @@ const App = () => {
     setCurrentNodeId(spotId);
   };
 
-  const progressPercent = ((tourData.flow.findIndex(n => n.id === currentNodeId) + 1) / tourData.flow.length) * 100;
-
   return (
     <div className="layout-wrapper">
       {/* 1. Header: Fixed/Sticky at the top */}
@@ -105,18 +110,10 @@ const App = () => {
         spotName={currentNode?.spotName}
         quizScore={quizScore}
         progress={progressPercent}
+        onOpenMap={() => setIsMapOpen(true)}
       />
 
-      {/* 2 & 3: Map (3.5) and Bottom Sheet (6.5) */}
-      <div className="map-pane">
-        <ChatMap
-          coords={currentNode?.coords}
-          currentNodeId={currentNodeId}
-          allSpots={allSpots}
-          onStartTour={startTourAt}
-        />
-      </div>
-
+      {/* 2. Main Chat Area - Occupies full space when map is hidden */}
       <div className="chat-pane">
         <div className="main-container">
           <div className="scrollable-chat">
@@ -150,6 +147,31 @@ const App = () => {
           </div>
         </div>
       </div>
+
+      {/* 3. Map Modal - Overlays the screen */}
+      {isMapOpen && (
+        <div className="map-modal-overlay" onClick={() => setIsMapOpen(false)}>
+          <div className="map-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="map-modal-header">
+              <h2 className="text-[16px] font-bold">투어 지도</h2>
+              <button
+                onClick={() => setIsMapOpen(false)}
+                className="close-modal-btn"
+              >
+                닫기
+              </button>
+            </div>
+            <div className="map-modal-body">
+              <ChatMap
+                coords={currentNode?.coords}
+                currentNodeId={currentNodeId}
+                allSpots={allSpots}
+                onStartTour={startTourAt}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
